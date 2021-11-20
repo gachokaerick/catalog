@@ -1,6 +1,5 @@
 package com.gachokaerick.eshop.catalog.domain;
 
-import io.swagger.annotations.ApiModel;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -10,7 +9,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 /**
  * @author Erick Gachoka
  */
-@ApiModel(description = "@author Erick Gachoka")
 @Entity
 @Table(name = "catalog_brand")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

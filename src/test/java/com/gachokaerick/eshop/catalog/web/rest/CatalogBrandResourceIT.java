@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.gachokaerick.eshop.catalog.IntegrationTest;
 import com.gachokaerick.eshop.catalog.domain.CatalogBrand;
 import com.gachokaerick.eshop.catalog.repository.CatalogBrandRepository;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogBrandDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -41,6 +43,9 @@ class CatalogBrandResourceIT {
 
     @Autowired
     private CatalogBrandRepository catalogBrandRepository;
+
+    @Autowired
+    private CatalogBrandMapper catalogBrandMapper;
 
     @Autowired
     private EntityManager em;
@@ -82,12 +87,13 @@ class CatalogBrandResourceIT {
     void createCatalogBrand() throws Exception {
         int databaseSizeBeforeCreate = catalogBrandRepository.findAll().size();
         // Create the CatalogBrand
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
         restCatalogBrandMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isCreated());
 
@@ -103,6 +109,7 @@ class CatalogBrandResourceIT {
     void createCatalogBrandWithExistingId() throws Exception {
         // Create the CatalogBrand with an existing ID
         catalogBrand.setId(1L);
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
 
         int databaseSizeBeforeCreate = catalogBrandRepository.findAll().size();
 
@@ -112,7 +119,7 @@ class CatalogBrandResourceIT {
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -129,13 +136,14 @@ class CatalogBrandResourceIT {
         catalogBrand.setBrand(null);
 
         // Create the CatalogBrand, which fails.
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
 
         restCatalogBrandMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -193,13 +201,14 @@ class CatalogBrandResourceIT {
         // Disconnect from session so that the updates on updatedCatalogBrand are not directly saved in db
         em.detach(updatedCatalogBrand);
         updatedCatalogBrand.brand(UPDATED_BRAND);
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(updatedCatalogBrand);
 
         restCatalogBrandMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedCatalogBrand.getId())
+                put(ENTITY_API_URL_ID, catalogBrandDTO.getId())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedCatalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isOk());
 
@@ -216,13 +225,16 @@ class CatalogBrandResourceIT {
         int databaseSizeBeforeUpdate = catalogBrandRepository.findAll().size();
         catalogBrand.setId(count.incrementAndGet());
 
+        // Create the CatalogBrand
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCatalogBrandMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, catalogBrand.getId())
+                put(ENTITY_API_URL_ID, catalogBrandDTO.getId())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -237,13 +249,16 @@ class CatalogBrandResourceIT {
         int databaseSizeBeforeUpdate = catalogBrandRepository.findAll().size();
         catalogBrand.setId(count.incrementAndGet());
 
+        // Create the CatalogBrand
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogBrandMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -258,13 +273,16 @@ class CatalogBrandResourceIT {
         int databaseSizeBeforeUpdate = catalogBrandRepository.findAll().size();
         catalogBrand.setId(count.incrementAndGet());
 
+        // Create the CatalogBrand
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogBrandMockMvc
             .perform(
                 put(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
@@ -337,13 +355,16 @@ class CatalogBrandResourceIT {
         int databaseSizeBeforeUpdate = catalogBrandRepository.findAll().size();
         catalogBrand.setId(count.incrementAndGet());
 
+        // Create the CatalogBrand
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCatalogBrandMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, catalogBrand.getId())
+                patch(ENTITY_API_URL_ID, catalogBrandDTO.getId())
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -358,13 +379,16 @@ class CatalogBrandResourceIT {
         int databaseSizeBeforeUpdate = catalogBrandRepository.findAll().size();
         catalogBrand.setId(count.incrementAndGet());
 
+        // Create the CatalogBrand
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogBrandMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -379,13 +403,16 @@ class CatalogBrandResourceIT {
         int databaseSizeBeforeUpdate = catalogBrandRepository.findAll().size();
         catalogBrand.setId(count.incrementAndGet());
 
+        // Create the CatalogBrand
+        CatalogBrandDTO catalogBrandDTO = catalogBrandMapper.toDto(catalogBrand);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogBrandMockMvc
             .perform(
                 patch(ENTITY_API_URL)
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogBrand))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogBrandDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

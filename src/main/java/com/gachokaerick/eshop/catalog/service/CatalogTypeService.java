@@ -2,6 +2,8 @@ package com.gachokaerick.eshop.catalog.service;
 
 import com.gachokaerick.eshop.catalog.domain.CatalogType;
 import com.gachokaerick.eshop.catalog.repository.CatalogTypeRepository;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogTypeDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,40 +23,44 @@ public class CatalogTypeService {
 
     private final CatalogTypeRepository catalogTypeRepository;
 
-    public CatalogTypeService(CatalogTypeRepository catalogTypeRepository) {
+    private final CatalogTypeMapper catalogTypeMapper;
+
+    public CatalogTypeService(CatalogTypeRepository catalogTypeRepository, CatalogTypeMapper catalogTypeMapper) {
         this.catalogTypeRepository = catalogTypeRepository;
+        this.catalogTypeMapper = catalogTypeMapper;
     }
 
     /**
      * Save a catalogType.
      *
-     * @param catalogType the entity to save.
+     * @param catalogTypeDTO the entity to save.
      * @return the persisted entity.
      */
-    public CatalogType save(CatalogType catalogType) {
-        log.debug("Request to save CatalogType : {}", catalogType);
-        return catalogTypeRepository.save(catalogType);
+    public CatalogTypeDTO save(CatalogTypeDTO catalogTypeDTO) {
+        log.debug("Request to save CatalogType : {}", catalogTypeDTO);
+        CatalogType catalogType = catalogTypeMapper.toEntity(catalogTypeDTO);
+        catalogType = catalogTypeRepository.save(catalogType);
+        return catalogTypeMapper.toDto(catalogType);
     }
 
     /**
      * Partially update a catalogType.
      *
-     * @param catalogType the entity to update partially.
+     * @param catalogTypeDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<CatalogType> partialUpdate(CatalogType catalogType) {
-        log.debug("Request to partially update CatalogType : {}", catalogType);
+    public Optional<CatalogTypeDTO> partialUpdate(CatalogTypeDTO catalogTypeDTO) {
+        log.debug("Request to partially update CatalogType : {}", catalogTypeDTO);
 
         return catalogTypeRepository
-            .findById(catalogType.getId())
+            .findById(catalogTypeDTO.getId())
             .map(existingCatalogType -> {
-                if (catalogType.getType() != null) {
-                    existingCatalogType.setType(catalogType.getType());
-                }
+                catalogTypeMapper.partialUpdate(existingCatalogType, catalogTypeDTO);
 
                 return existingCatalogType;
             })
-            .map(catalogTypeRepository::save);
+            .map(catalogTypeRepository::save)
+            .map(catalogTypeMapper::toDto);
     }
 
     /**
@@ -64,9 +70,9 @@ public class CatalogTypeService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<CatalogType> findAll(Pageable pageable) {
+    public Page<CatalogTypeDTO> findAll(Pageable pageable) {
         log.debug("Request to get all CatalogTypes");
-        return catalogTypeRepository.findAll(pageable);
+        return catalogTypeRepository.findAll(pageable).map(catalogTypeMapper::toDto);
     }
 
     /**
@@ -76,9 +82,9 @@ public class CatalogTypeService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<CatalogType> findOne(Long id) {
+    public Optional<CatalogTypeDTO> findOne(Long id) {
         log.debug("Request to get CatalogType : {}", id);
-        return catalogTypeRepository.findById(id);
+        return catalogTypeRepository.findById(id).map(catalogTypeMapper::toDto);
     }
 
     /**

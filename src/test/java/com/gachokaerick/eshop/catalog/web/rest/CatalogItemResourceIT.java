@@ -12,6 +12,8 @@ import com.gachokaerick.eshop.catalog.domain.CatalogBrand;
 import com.gachokaerick.eshop.catalog.domain.CatalogItem;
 import com.gachokaerick.eshop.catalog.domain.CatalogType;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogItemMapper;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
@@ -69,6 +71,9 @@ class CatalogItemResourceIT {
 
     @Autowired
     private CatalogItemRepository catalogItemRepository;
+
+    @Autowired
+    private CatalogItemMapper catalogItemMapper;
 
     @Autowired
     private EntityManager em;
@@ -168,12 +173,13 @@ class CatalogItemResourceIT {
     void createCatalogItem() throws Exception {
         int databaseSizeBeforeCreate = catalogItemRepository.findAll().size();
         // Create the CatalogItem
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
         restCatalogItemMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isCreated());
 
@@ -197,6 +203,7 @@ class CatalogItemResourceIT {
     void createCatalogItemWithExistingId() throws Exception {
         // Create the CatalogItem with an existing ID
         catalogItem.setId(1L);
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
 
         int databaseSizeBeforeCreate = catalogItemRepository.findAll().size();
 
@@ -206,7 +213,7 @@ class CatalogItemResourceIT {
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -223,13 +230,14 @@ class CatalogItemResourceIT {
         catalogItem.setName(null);
 
         // Create the CatalogItem, which fails.
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
 
         restCatalogItemMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -245,13 +253,14 @@ class CatalogItemResourceIT {
         catalogItem.setPrice(null);
 
         // Create the CatalogItem, which fails.
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
 
         restCatalogItemMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -267,13 +276,14 @@ class CatalogItemResourceIT {
         catalogItem.setAvailableStock(null);
 
         // Create the CatalogItem, which fails.
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
 
         restCatalogItemMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -289,13 +299,14 @@ class CatalogItemResourceIT {
         catalogItem.setRestockThreshold(null);
 
         // Create the CatalogItem, which fails.
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
 
         restCatalogItemMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -311,13 +322,14 @@ class CatalogItemResourceIT {
         catalogItem.setMaxStockThreshold(null);
 
         // Create the CatalogItem, which fails.
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
 
         restCatalogItemMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -400,13 +412,14 @@ class CatalogItemResourceIT {
             .restockThreshold(UPDATED_RESTOCK_THRESHOLD)
             .maxStockThreshold(UPDATED_MAX_STOCK_THRESHOLD)
             .onReorder(UPDATED_ON_REORDER);
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(updatedCatalogItem);
 
         restCatalogItemMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedCatalogItem.getId())
+                put(ENTITY_API_URL_ID, catalogItemDTO.getId())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedCatalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isOk());
 
@@ -431,13 +444,16 @@ class CatalogItemResourceIT {
         int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
         catalogItem.setId(count.incrementAndGet());
 
+        // Create the CatalogItem
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCatalogItemMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, catalogItem.getId())
+                put(ENTITY_API_URL_ID, catalogItemDTO.getId())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -452,13 +468,16 @@ class CatalogItemResourceIT {
         int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
         catalogItem.setId(count.incrementAndGet());
 
+        // Create the CatalogItem
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogItemMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -473,13 +492,16 @@ class CatalogItemResourceIT {
         int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
         catalogItem.setId(count.incrementAndGet());
 
+        // Create the CatalogItem
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogItemMockMvc
             .perform(
                 put(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
@@ -583,13 +605,16 @@ class CatalogItemResourceIT {
         int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
         catalogItem.setId(count.incrementAndGet());
 
+        // Create the CatalogItem
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCatalogItemMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, catalogItem.getId())
+                patch(ENTITY_API_URL_ID, catalogItemDTO.getId())
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -604,13 +629,16 @@ class CatalogItemResourceIT {
         int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
         catalogItem.setId(count.incrementAndGet());
 
+        // Create the CatalogItem
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogItemMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -625,13 +653,16 @@ class CatalogItemResourceIT {
         int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
         catalogItem.setId(count.incrementAndGet());
 
+        // Create the CatalogItem
+        CatalogItemDTO catalogItemDTO = catalogItemMapper.toDto(catalogItem);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogItemMockMvc
             .perform(
                 patch(ENTITY_API_URL)
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItem))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

@@ -2,6 +2,8 @@ package com.gachokaerick.eshop.catalog.service;
 
 import com.gachokaerick.eshop.catalog.domain.CatalogItem;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogItemMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,64 +23,44 @@ public class CatalogItemService {
 
     private final CatalogItemRepository catalogItemRepository;
 
-    public CatalogItemService(CatalogItemRepository catalogItemRepository) {
+    private final CatalogItemMapper catalogItemMapper;
+
+    public CatalogItemService(CatalogItemRepository catalogItemRepository, CatalogItemMapper catalogItemMapper) {
         this.catalogItemRepository = catalogItemRepository;
+        this.catalogItemMapper = catalogItemMapper;
     }
 
     /**
      * Save a catalogItem.
      *
-     * @param catalogItem the entity to save.
+     * @param catalogItemDTO the entity to save.
      * @return the persisted entity.
      */
-    public CatalogItem save(CatalogItem catalogItem) {
-        log.debug("Request to save CatalogItem : {}", catalogItem);
-        return catalogItemRepository.save(catalogItem);
+    public CatalogItemDTO save(CatalogItemDTO catalogItemDTO) {
+        log.debug("Request to save CatalogItem : {}", catalogItemDTO);
+        CatalogItem catalogItem = catalogItemMapper.toEntity(catalogItemDTO);
+        catalogItem = catalogItemRepository.save(catalogItem);
+        return catalogItemMapper.toDto(catalogItem);
     }
 
     /**
      * Partially update a catalogItem.
      *
-     * @param catalogItem the entity to update partially.
+     * @param catalogItemDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<CatalogItem> partialUpdate(CatalogItem catalogItem) {
-        log.debug("Request to partially update CatalogItem : {}", catalogItem);
+    public Optional<CatalogItemDTO> partialUpdate(CatalogItemDTO catalogItemDTO) {
+        log.debug("Request to partially update CatalogItem : {}", catalogItemDTO);
 
         return catalogItemRepository
-            .findById(catalogItem.getId())
+            .findById(catalogItemDTO.getId())
             .map(existingCatalogItem -> {
-                if (catalogItem.getName() != null) {
-                    existingCatalogItem.setName(catalogItem.getName());
-                }
-                if (catalogItem.getDescription() != null) {
-                    existingCatalogItem.setDescription(catalogItem.getDescription());
-                }
-                if (catalogItem.getPrice() != null) {
-                    existingCatalogItem.setPrice(catalogItem.getPrice());
-                }
-                if (catalogItem.getPictureFileName() != null) {
-                    existingCatalogItem.setPictureFileName(catalogItem.getPictureFileName());
-                }
-                if (catalogItem.getPictureUrl() != null) {
-                    existingCatalogItem.setPictureUrl(catalogItem.getPictureUrl());
-                }
-                if (catalogItem.getAvailableStock() != null) {
-                    existingCatalogItem.setAvailableStock(catalogItem.getAvailableStock());
-                }
-                if (catalogItem.getRestockThreshold() != null) {
-                    existingCatalogItem.setRestockThreshold(catalogItem.getRestockThreshold());
-                }
-                if (catalogItem.getMaxStockThreshold() != null) {
-                    existingCatalogItem.setMaxStockThreshold(catalogItem.getMaxStockThreshold());
-                }
-                if (catalogItem.getOnReorder() != null) {
-                    existingCatalogItem.setOnReorder(catalogItem.getOnReorder());
-                }
+                catalogItemMapper.partialUpdate(existingCatalogItem, catalogItemDTO);
 
                 return existingCatalogItem;
             })
-            .map(catalogItemRepository::save);
+            .map(catalogItemRepository::save)
+            .map(catalogItemMapper::toDto);
     }
 
     /**
@@ -88,9 +70,9 @@ public class CatalogItemService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<CatalogItem> findAll(Pageable pageable) {
+    public Page<CatalogItemDTO> findAll(Pageable pageable) {
         log.debug("Request to get all CatalogItems");
-        return catalogItemRepository.findAll(pageable);
+        return catalogItemRepository.findAll(pageable).map(catalogItemMapper::toDto);
     }
 
     /**
@@ -100,9 +82,9 @@ public class CatalogItemService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<CatalogItem> findOne(Long id) {
+    public Optional<CatalogItemDTO> findOne(Long id) {
         log.debug("Request to get CatalogItem : {}", id);
-        return catalogItemRepository.findById(id);
+        return catalogItemRepository.findById(id).map(catalogItemMapper::toDto);
     }
 
     /**

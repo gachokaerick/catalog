@@ -45,6 +45,7 @@
     "creationTimestamp": 1636866398585,
     "jwtSecretKey": "MmI0MWM5ZDI2OThiMTU5ODZhMzc0OTZmYjA1YmI1MzhmNzI4ZDFlMDRlMTNjNWVjNmZjNzg4NGUwZmNkYTQzNTY1MDVjYmNhZTc4MjMwMjNkZTZlN2ViNDk3ZWZhOGIzMmE1M2I0MjBmMWFlNDVjMDU0MGVhZTFiNDdmMjVjNDY=",
     "entities": ["CatalogType", "CatalogItem", "CatalogBrand"],
-    "lastLiquibaseTimestamp": 1636866578000
+    "lastLiquibaseTimestamp": 1636866578000,
+    "gatewayServerPort": "8080"
   }
 }

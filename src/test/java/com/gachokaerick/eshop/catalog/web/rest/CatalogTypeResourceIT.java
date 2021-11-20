@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.gachokaerick.eshop.catalog.IntegrationTest;
 import com.gachokaerick.eshop.catalog.domain.CatalogType;
 import com.gachokaerick.eshop.catalog.repository.CatalogTypeRepository;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogTypeDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -41,6 +43,9 @@ class CatalogTypeResourceIT {
 
     @Autowired
     private CatalogTypeRepository catalogTypeRepository;
+
+    @Autowired
+    private CatalogTypeMapper catalogTypeMapper;
 
     @Autowired
     private EntityManager em;
@@ -82,12 +87,13 @@ class CatalogTypeResourceIT {
     void createCatalogType() throws Exception {
         int databaseSizeBeforeCreate = catalogTypeRepository.findAll().size();
         // Create the CatalogType
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
         restCatalogTypeMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isCreated());
 
@@ -103,6 +109,7 @@ class CatalogTypeResourceIT {
     void createCatalogTypeWithExistingId() throws Exception {
         // Create the CatalogType with an existing ID
         catalogType.setId(1L);
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
 
         int databaseSizeBeforeCreate = catalogTypeRepository.findAll().size();
 
@@ -112,7 +119,7 @@ class CatalogTypeResourceIT {
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -129,13 +136,14 @@ class CatalogTypeResourceIT {
         catalogType.setType(null);
 
         // Create the CatalogType, which fails.
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
 
         restCatalogTypeMockMvc
             .perform(
                 post(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -193,13 +201,14 @@ class CatalogTypeResourceIT {
         // Disconnect from session so that the updates on updatedCatalogType are not directly saved in db
         em.detach(updatedCatalogType);
         updatedCatalogType.type(UPDATED_TYPE);
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(updatedCatalogType);
 
         restCatalogTypeMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedCatalogType.getId())
+                put(ENTITY_API_URL_ID, catalogTypeDTO.getId())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedCatalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isOk());
 
@@ -216,13 +225,16 @@ class CatalogTypeResourceIT {
         int databaseSizeBeforeUpdate = catalogTypeRepository.findAll().size();
         catalogType.setId(count.incrementAndGet());
 
+        // Create the CatalogType
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCatalogTypeMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, catalogType.getId())
+                put(ENTITY_API_URL_ID, catalogTypeDTO.getId())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -237,13 +249,16 @@ class CatalogTypeResourceIT {
         int databaseSizeBeforeUpdate = catalogTypeRepository.findAll().size();
         catalogType.setId(count.incrementAndGet());
 
+        // Create the CatalogType
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogTypeMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -258,13 +273,16 @@ class CatalogTypeResourceIT {
         int databaseSizeBeforeUpdate = catalogTypeRepository.findAll().size();
         catalogType.setId(count.incrementAndGet());
 
+        // Create the CatalogType
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogTypeMockMvc
             .perform(
                 put(ENTITY_API_URL)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
@@ -337,13 +355,16 @@ class CatalogTypeResourceIT {
         int databaseSizeBeforeUpdate = catalogTypeRepository.findAll().size();
         catalogType.setId(count.incrementAndGet());
 
+        // Create the CatalogType
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCatalogTypeMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, catalogType.getId())
+                patch(ENTITY_API_URL_ID, catalogTypeDTO.getId())
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -358,13 +379,16 @@ class CatalogTypeResourceIT {
         int databaseSizeBeforeUpdate = catalogTypeRepository.findAll().size();
         catalogType.setId(count.incrementAndGet());
 
+        // Create the CatalogType
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogTypeMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -379,13 +403,16 @@ class CatalogTypeResourceIT {
         int databaseSizeBeforeUpdate = catalogTypeRepository.findAll().size();
         catalogType.setId(count.incrementAndGet());
 
+        // Create the CatalogType
+        CatalogTypeDTO catalogTypeDTO = catalogTypeMapper.toDto(catalogType);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCatalogTypeMockMvc
             .perform(
                 patch(ENTITY_API_URL)
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogType))
+                    .content(TestUtil.convertObjectToJsonBytes(catalogTypeDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

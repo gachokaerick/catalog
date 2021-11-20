@@ -1,8 +1,8 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
-import com.gachokaerick.eshop.catalog.domain.CatalogItem;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
 import com.gachokaerick.eshop.catalog.service.CatalogItemService;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,17 +51,17 @@ public class CatalogItemResource {
     /**
      * {@code POST  /catalog-items} : Create a new catalogItem.
      *
-     * @param catalogItem the catalogItem to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new catalogItem, or with status {@code 400 (Bad Request)} if the catalogItem has already an ID.
+     * @param catalogItemDTO the catalogItemDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new catalogItemDTO, or with status {@code 400 (Bad Request)} if the catalogItem has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/catalog-items")
-    public ResponseEntity<CatalogItem> createCatalogItem(@Valid @RequestBody CatalogItem catalogItem) throws URISyntaxException {
-        log.debug("REST request to save CatalogItem : {}", catalogItem);
-        if (catalogItem.getId() != null) {
+    public ResponseEntity<CatalogItemDTO> createCatalogItem(@Valid @RequestBody CatalogItemDTO catalogItemDTO) throws URISyntaxException {
+        log.debug("REST request to save CatalogItem : {}", catalogItemDTO);
+        if (catalogItemDTO.getId() != null) {
             throw new BadRequestAlertException("A new catalogItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CatalogItem result = catalogItemService.save(catalogItem);
+        CatalogItemDTO result = catalogItemService.save(catalogItemDTO);
         return ResponseEntity
             .created(new URI("/api/catalog-items/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -71,23 +71,23 @@ public class CatalogItemResource {
     /**
      * {@code PUT  /catalog-items/:id} : Updates an existing catalogItem.
      *
-     * @param id the id of the catalogItem to save.
-     * @param catalogItem the catalogItem to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated catalogItem,
-     * or with status {@code 400 (Bad Request)} if the catalogItem is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the catalogItem couldn't be updated.
+     * @param id the id of the catalogItemDTO to save.
+     * @param catalogItemDTO the catalogItemDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated catalogItemDTO,
+     * or with status {@code 400 (Bad Request)} if the catalogItemDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the catalogItemDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/catalog-items/{id}")
-    public ResponseEntity<CatalogItem> updateCatalogItem(
+    public ResponseEntity<CatalogItemDTO> updateCatalogItem(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody CatalogItem catalogItem
+        @Valid @RequestBody CatalogItemDTO catalogItemDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update CatalogItem : {}, {}", id, catalogItem);
-        if (catalogItem.getId() == null) {
+        log.debug("REST request to update CatalogItem : {}, {}", id, catalogItemDTO);
+        if (catalogItemDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, catalogItem.getId())) {
+        if (!Objects.equals(id, catalogItemDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -95,34 +95,34 @@ public class CatalogItemResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CatalogItem result = catalogItemService.save(catalogItem);
+        CatalogItemDTO result = catalogItemService.save(catalogItemDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItem.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItemDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /catalog-items/:id} : Partial updates given fields of an existing catalogItem, field will ignore if it is null
      *
-     * @param id the id of the catalogItem to save.
-     * @param catalogItem the catalogItem to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated catalogItem,
-     * or with status {@code 400 (Bad Request)} if the catalogItem is not valid,
-     * or with status {@code 404 (Not Found)} if the catalogItem is not found,
-     * or with status {@code 500 (Internal Server Error)} if the catalogItem couldn't be updated.
+     * @param id the id of the catalogItemDTO to save.
+     * @param catalogItemDTO the catalogItemDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated catalogItemDTO,
+     * or with status {@code 400 (Bad Request)} if the catalogItemDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the catalogItemDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the catalogItemDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/catalog-items/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<CatalogItem> partialUpdateCatalogItem(
+    public ResponseEntity<CatalogItemDTO> partialUpdateCatalogItem(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody CatalogItem catalogItem
+        @NotNull @RequestBody CatalogItemDTO catalogItemDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update CatalogItem partially : {}, {}", id, catalogItem);
-        if (catalogItem.getId() == null) {
+        log.debug("REST request to partial update CatalogItem partially : {}, {}", id, catalogItemDTO);
+        if (catalogItemDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, catalogItem.getId())) {
+        if (!Objects.equals(id, catalogItemDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -130,11 +130,11 @@ public class CatalogItemResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<CatalogItem> result = catalogItemService.partialUpdate(catalogItem);
+        Optional<CatalogItemDTO> result = catalogItemService.partialUpdate(catalogItemDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItem.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItemDTO.getId().toString())
         );
     }
 
@@ -145,9 +145,9 @@ public class CatalogItemResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of catalogItems in body.
      */
     @GetMapping("/catalog-items")
-    public ResponseEntity<List<CatalogItem>> getAllCatalogItems(Pageable pageable) {
+    public ResponseEntity<List<CatalogItemDTO>> getAllCatalogItems(Pageable pageable) {
         log.debug("REST request to get a page of CatalogItems");
-        Page<CatalogItem> page = catalogItemService.findAll(pageable);
+        Page<CatalogItemDTO> page = catalogItemService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -155,20 +155,20 @@ public class CatalogItemResource {
     /**
      * {@code GET  /catalog-items/:id} : get the "id" catalogItem.
      *
-     * @param id the id of the catalogItem to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the catalogItem, or with status {@code 404 (Not Found)}.
+     * @param id the id of the catalogItemDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the catalogItemDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/catalog-items/{id}")
-    public ResponseEntity<CatalogItem> getCatalogItem(@PathVariable Long id) {
+    public ResponseEntity<CatalogItemDTO> getCatalogItem(@PathVariable Long id) {
         log.debug("REST request to get CatalogItem : {}", id);
-        Optional<CatalogItem> catalogItem = catalogItemService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(catalogItem);
+        Optional<CatalogItemDTO> catalogItemDTO = catalogItemService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(catalogItemDTO);
     }
 
     /**
      * {@code DELETE  /catalog-items/:id} : delete the "id" catalogItem.
      *
-     * @param id the id of the catalogItem to delete.
+     * @param id the id of the catalogItemDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/catalog-items/{id}")

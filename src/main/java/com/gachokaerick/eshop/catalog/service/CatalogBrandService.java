@@ -2,6 +2,8 @@ package com.gachokaerick.eshop.catalog.service;
 
 import com.gachokaerick.eshop.catalog.domain.CatalogBrand;
 import com.gachokaerick.eshop.catalog.repository.CatalogBrandRepository;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogBrandDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,40 +23,44 @@ public class CatalogBrandService {
 
     private final CatalogBrandRepository catalogBrandRepository;
 
-    public CatalogBrandService(CatalogBrandRepository catalogBrandRepository) {
+    private final CatalogBrandMapper catalogBrandMapper;
+
+    public CatalogBrandService(CatalogBrandRepository catalogBrandRepository, CatalogBrandMapper catalogBrandMapper) {
         this.catalogBrandRepository = catalogBrandRepository;
+        this.catalogBrandMapper = catalogBrandMapper;
     }
 
     /**
      * Save a catalogBrand.
      *
-     * @param catalogBrand the entity to save.
+     * @param catalogBrandDTO the entity to save.
      * @return the persisted entity.
      */
-    public CatalogBrand save(CatalogBrand catalogBrand) {
-        log.debug("Request to save CatalogBrand : {}", catalogBrand);
-        return catalogBrandRepository.save(catalogBrand);
+    public CatalogBrandDTO save(CatalogBrandDTO catalogBrandDTO) {
+        log.debug("Request to save CatalogBrand : {}", catalogBrandDTO);
+        CatalogBrand catalogBrand = catalogBrandMapper.toEntity(catalogBrandDTO);
+        catalogBrand = catalogBrandRepository.save(catalogBrand);
+        return catalogBrandMapper.toDto(catalogBrand);
     }
 
     /**
      * Partially update a catalogBrand.
      *
-     * @param catalogBrand the entity to update partially.
+     * @param catalogBrandDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<CatalogBrand> partialUpdate(CatalogBrand catalogBrand) {
-        log.debug("Request to partially update CatalogBrand : {}", catalogBrand);
+    public Optional<CatalogBrandDTO> partialUpdate(CatalogBrandDTO catalogBrandDTO) {
+        log.debug("Request to partially update CatalogBrand : {}", catalogBrandDTO);
 
         return catalogBrandRepository
-            .findById(catalogBrand.getId())
+            .findById(catalogBrandDTO.getId())
             .map(existingCatalogBrand -> {
-                if (catalogBrand.getBrand() != null) {
-                    existingCatalogBrand.setBrand(catalogBrand.getBrand());
-                }
+                catalogBrandMapper.partialUpdate(existingCatalogBrand, catalogBrandDTO);
 
                 return existingCatalogBrand;
             })
-            .map(catalogBrandRepository::save);
+            .map(catalogBrandRepository::save)
+            .map(catalogBrandMapper::toDto);
     }
 
     /**
@@ -64,9 +70,9 @@ public class CatalogBrandService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<CatalogBrand> findAll(Pageable pageable) {
+    public Page<CatalogBrandDTO> findAll(Pageable pageable) {
         log.debug("Request to get all CatalogBrands");
-        return catalogBrandRepository.findAll(pageable);
+        return catalogBrandRepository.findAll(pageable).map(catalogBrandMapper::toDto);
     }
 
     /**
@@ -76,9 +82,9 @@ public class CatalogBrandService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<CatalogBrand> findOne(Long id) {
+    public Optional<CatalogBrandDTO> findOne(Long id) {
         log.debug("Request to get CatalogBrand : {}", id);
-        return catalogBrandRepository.findById(id);
+        return catalogBrandRepository.findById(id).map(catalogBrandMapper::toDto);
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.gachokaerick.eshop.catalog.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.*;
@@ -12,7 +10,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 /**
  * @author Erick Gachoka
  */
-@ApiModel(description = "@author Erick Gachoka")
 @Entity
 @Table(name = "catalog_item")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -50,7 +47,6 @@ public class CatalogItem implements Serializable {
     /**
      * Available stock at which we should reorder
      */
-    @ApiModelProperty(value = "Available stock at which we should reorder", required = true)
     @NotNull
     @Column(name = "restock_threshold", nullable = false)
     private Integer restockThreshold;
@@ -58,10 +54,6 @@ public class CatalogItem implements Serializable {
     /**
      * Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
      */
-    @ApiModelProperty(
-        value = "Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)",
-        required = true
-    )
     @NotNull
     @Column(name = "max_stock_threshold", nullable = false)
     private Integer maxStockThreshold;
