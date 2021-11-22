@@ -1,6 +1,6 @@
 package com.gachokaerick.eshop.catalog.web.rest.vm;
 
-import com.gachokaerick.eshop.catalog.service.dto.AdminUserDTO;
+import com.gachokaerick.eshop.catalog.model.AdminUserDTO;
 
 /**
  * View Model extending the AdminUserDTO, which is meant to be used in the user management UI.

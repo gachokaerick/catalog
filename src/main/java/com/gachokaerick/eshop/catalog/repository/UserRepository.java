@@ -1,7 +1,6 @@
 package com.gachokaerick.eshop.catalog.repository;
 
-import com.gachokaerick.eshop.catalog.domain.User;
-import java.util.List;
+import com.gachokaerick.eshop.catalog.model.User;
 import java.util.Optional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;

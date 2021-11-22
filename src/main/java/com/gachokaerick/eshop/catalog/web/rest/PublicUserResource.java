@@ -1,7 +1,7 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
+import com.gachokaerick.eshop.catalog.model.UserDTO;
 import com.gachokaerick.eshop.catalog.service.UserService;
-import com.gachokaerick.eshop.catalog.service.dto.UserDTO;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

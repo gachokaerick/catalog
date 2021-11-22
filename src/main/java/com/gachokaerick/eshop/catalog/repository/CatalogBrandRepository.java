@@ -1,6 +1,6 @@
 package com.gachokaerick.eshop.catalog.repository;
 
-import com.gachokaerick.eshop.catalog.domain.CatalogBrand;
+import com.gachokaerick.eshop.catalog.model.CatalogBrand;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 

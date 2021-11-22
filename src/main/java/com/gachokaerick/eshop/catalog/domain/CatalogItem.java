@@ -1,267 +1,73 @@
 package com.gachokaerick.eshop.catalog.domain;
 
-import java.io.Serializable;
+import com.gachokaerick.eshop.catalog.exception.DomainException;
+import com.gachokaerick.eshop.catalog.model.CatalogBrand;
+import com.gachokaerick.eshop.catalog.model.CatalogType;
 import java.math.BigDecimal;
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import javax.validation.constraints.NotNull;
 
-/**
- * @author Erick Gachoka
- */
-@Entity
-@Table(name = "catalog_item")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CatalogItem implements Serializable {
+public class CatalogItem {
 
-    private static final long serialVersionUID = 1L;
+    private String domainName = "CatalogItem";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
-    @Column(name = "id")
     private Long id;
 
     @NotNull
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description")
     private String description;
 
     @NotNull
-    @Column(name = "price", precision = 21, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @Column(name = "picture_file_name")
     private String pictureFileName;
 
-    @Column(name = "picture_url")
     private String pictureUrl;
 
     @NotNull
-    @Column(name = "available_stock", nullable = false)
     private Integer availableStock;
 
     /**
      * Available stock at which we should reorder
      */
     @NotNull
-    @Column(name = "restock_threshold", nullable = false)
     private Integer restockThreshold;
 
     /**
      * Maximum number of units that can be in-stock at any time (due to physical/logistical constraints in warehouses)
      */
     @NotNull
-    @Column(name = "max_stock_threshold", nullable = false)
     private Integer maxStockThreshold;
 
-    @Column(name = "on_reorder")
     private Boolean onReorder;
 
-    @OneToOne(optional = false)
     @NotNull
-    @JoinColumn(unique = true)
     private CatalogBrand catalogBrand;
 
-    @OneToOne(optional = false)
     @NotNull
-    @JoinColumn(unique = true)
     private CatalogType catalogType;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public CatalogItem id(Long id) {
-        this.setId(id);
-        return this;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public CatalogItem name(String name) {
-        this.setName(name);
-        return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public CatalogItem description(String description) {
-        this.setDescription(description);
-        return this;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getPrice() {
-        return this.price;
-    }
-
-    public CatalogItem price(BigDecimal price) {
-        this.setPrice(price);
-        return this;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getPictureFileName() {
-        return this.pictureFileName;
-    }
-
-    public CatalogItem pictureFileName(String pictureFileName) {
-        this.setPictureFileName(pictureFileName);
-        return this;
-    }
-
-    public void setPictureFileName(String pictureFileName) {
-        this.pictureFileName = pictureFileName;
-    }
-
-    public String getPictureUrl() {
-        return this.pictureUrl;
-    }
-
-    public CatalogItem pictureUrl(String pictureUrl) {
-        this.setPictureUrl(pictureUrl);
-        return this;
-    }
-
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
-    }
-
-    public Integer getAvailableStock() {
-        return this.availableStock;
-    }
-
-    public CatalogItem availableStock(Integer availableStock) {
-        this.setAvailableStock(availableStock);
-        return this;
-    }
-
-    public void setAvailableStock(Integer availableStock) {
-        this.availableStock = availableStock;
-    }
-
-    public Integer getRestockThreshold() {
-        return this.restockThreshold;
-    }
-
-    public CatalogItem restockThreshold(Integer restockThreshold) {
-        this.setRestockThreshold(restockThreshold);
-        return this;
-    }
-
-    public void setRestockThreshold(Integer restockThreshold) {
-        this.restockThreshold = restockThreshold;
-    }
-
-    public Integer getMaxStockThreshold() {
-        return this.maxStockThreshold;
-    }
-
-    public CatalogItem maxStockThreshold(Integer maxStockThreshold) {
-        this.setMaxStockThreshold(maxStockThreshold);
-        return this;
-    }
-
-    public void setMaxStockThreshold(Integer maxStockThreshold) {
-        this.maxStockThreshold = maxStockThreshold;
-    }
-
-    public Boolean getOnReorder() {
-        return this.onReorder;
-    }
-
-    public CatalogItem onReorder(Boolean onReorder) {
-        this.setOnReorder(onReorder);
-        return this;
-    }
-
-    public void setOnReorder(Boolean onReorder) {
-        this.onReorder = onReorder;
-    }
-
-    public CatalogBrand getCatalogBrand() {
-        return this.catalogBrand;
-    }
-
-    public void setCatalogBrand(CatalogBrand catalogBrand) {
-        this.catalogBrand = catalogBrand;
-    }
-
-    public CatalogItem catalogBrand(CatalogBrand catalogBrand) {
-        this.setCatalogBrand(catalogBrand);
-        return this;
-    }
-
-    public CatalogType getCatalogType() {
-        return this.catalogType;
-    }
-
-    public void setCatalogType(CatalogType catalogType) {
-        this.catalogType = catalogType;
-    }
-
-    public CatalogItem catalogType(CatalogType catalogType) {
-        this.setCatalogType(catalogType);
-        return this;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    /**
+     * Decrements the quantity of a particular item in inventory and ensures the restockThreshold hasn't
+     * been breached. If so, a RestockRequest is generated in CheckThreshold.
+     * If there is sufficient stock of an item, then the integer returned at the end of this call should be the same as quantityDesired.
+     * In the event that there is not sufficient stock available, the method will remove whatever stock is available and return that quantity to the client.
+     * In this case, it is the responsibility of the client to determine if the amount that is returned is the same as quantityDesired.
+     * It is invalid to pass in a negative number.
+     *
+     * @param quantityDesired quantity to deduct from stock
+     * @return the number actually removed from stock
+     */
+    public int removeStock(int quantityDesired) {
+        if (availableStock == 0) {
+            throw DomainException.throwDomainException(domainName, "Empty stock. Product " + name + " is sold out");
         }
-        if (!(o instanceof CatalogItem)) {
-            return false;
+        if (quantityDesired <= 0) {
+            throw DomainException.throwDomainException(domainName, "Item units desired should be greater than zero");
         }
-        return id != null && id.equals(((CatalogItem) o).id);
-    }
 
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "CatalogItem{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", price=" + getPrice() +
-            ", pictureFileName='" + getPictureFileName() + "'" +
-            ", pictureUrl='" + getPictureUrl() + "'" +
-            ", availableStock=" + getAvailableStock() +
-            ", restockThreshold=" + getRestockThreshold() +
-            ", maxStockThreshold=" + getMaxStockThreshold() +
-            ", onReorder='" + getOnReorder() + "'" +
-            "}";
+        int removed = Math.min(quantityDesired, availableStock);
+        this.availableStock -= removed;
+        return removed;
     }
 }

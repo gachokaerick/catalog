@@ -1,9 +1,9 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
 import com.gachokaerick.eshop.catalog.config.Constants;
+import com.gachokaerick.eshop.catalog.model.AdminUserDTO;
 import com.gachokaerick.eshop.catalog.security.AuthoritiesConstants;
 import com.gachokaerick.eshop.catalog.service.UserService;
-import com.gachokaerick.eshop.catalog.service.dto.AdminUserDTO;
 import java.util.*;
 import javax.validation.constraints.Pattern;
 import org.slf4j.Logger;
@@ -17,14 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing users.
  * <p>
- * This class accesses the {@link com.gachokaerick.eshop.catalog.domain.User} entity, and needs to fetch its collection of authorities.
+ * This class accesses the {@link com.gachokaerick.eshop.catalog.model.User} entity, and needs to fetch its collection of authorities.
  * <p>
  * For a normal use-case, it would be better to have an eager relationship between User and Authority,
  * and send everything to the client side: there would be no View Model and DTO, a lot less code, and an outer-join

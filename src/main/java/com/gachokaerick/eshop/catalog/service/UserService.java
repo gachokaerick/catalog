@@ -1,13 +1,13 @@
 package com.gachokaerick.eshop.catalog.service;
 
 import com.gachokaerick.eshop.catalog.config.Constants;
-import com.gachokaerick.eshop.catalog.domain.Authority;
-import com.gachokaerick.eshop.catalog.domain.User;
+import com.gachokaerick.eshop.catalog.model.AdminUserDTO;
+import com.gachokaerick.eshop.catalog.model.Authority;
+import com.gachokaerick.eshop.catalog.model.User;
+import com.gachokaerick.eshop.catalog.model.UserDTO;
 import com.gachokaerick.eshop.catalog.repository.AuthorityRepository;
 import com.gachokaerick.eshop.catalog.repository.UserRepository;
 import com.gachokaerick.eshop.catalog.security.SecurityUtils;
-import com.gachokaerick.eshop.catalog.service.dto.AdminUserDTO;
-import com.gachokaerick.eshop.catalog.service.dto.UserDTO;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;

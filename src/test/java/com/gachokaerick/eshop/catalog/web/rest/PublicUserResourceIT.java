@@ -6,8 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.gachokaerick.eshop.catalog.IntegrationTest;
-import com.gachokaerick.eshop.catalog.config.TestSecurityConfiguration;
-import com.gachokaerick.eshop.catalog.domain.User;
+import com.gachokaerick.eshop.catalog.model.User;
 import com.gachokaerick.eshop.catalog.repository.UserRepository;
 import com.gachokaerick.eshop.catalog.security.AuthoritiesConstants;
 import javax.persistence.EntityManager;

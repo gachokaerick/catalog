@@ -1,6 +1,6 @@
 package com.gachokaerick.eshop.catalog.repository;
 
-import com.gachokaerick.eshop.catalog.domain.Authority;
+import com.gachokaerick.eshop.catalog.model.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

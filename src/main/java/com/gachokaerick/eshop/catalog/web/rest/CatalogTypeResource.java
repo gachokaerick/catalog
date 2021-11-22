@@ -1,8 +1,8 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
+import com.gachokaerick.eshop.catalog.model.CatalogTypeDTO;
 import com.gachokaerick.eshop.catalog.repository.CatalogTypeRepository;
 import com.gachokaerick.eshop.catalog.service.CatalogTypeService;
-import com.gachokaerick.eshop.catalog.service.dto.CatalogTypeDTO;
 import com.gachokaerick.eshop.catalog.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,7 +25,7 @@ import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
- * REST controller for managing {@link com.gachokaerick.eshop.catalog.domain.CatalogType}.
+ * REST controller for managing {@link com.gachokaerick.eshop.catalog.model.CatalogType}.
  */
 @RestController
 @RequestMapping("/api")
