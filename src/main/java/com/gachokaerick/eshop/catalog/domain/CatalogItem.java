@@ -52,7 +52,7 @@ public class CatalogItem implements Serializable {
     private Integer restockThreshold;
 
     /**
-     * Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
+     * Maximum number of units that can be in-stock at any time (due to physical/logistical constraints in warehouses)
      */
     @NotNull
     @Column(name = "max_stock_threshold", nullable = false)
