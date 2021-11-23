@@ -38,11 +38,11 @@ public class CatalogItemDTO implements Serializable {
     private Integer restockThreshold;
 
     /**
-     * Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
+     * Maximum number of units that can be in-stock at any time (due to physical/logistical constraints in warehouses)
      */
     @NotNull
     @ApiModelProperty(
-        value = "Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)",
+        value = "Maximum number of units that can be in-stock at any time (due to physical/logistical constraints in warehouses)",
         required = true
     )
     private Integer maxStockThreshold;
