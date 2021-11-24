@@ -2,8 +2,6 @@ package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDTO;
-import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
 import com.gachokaerick.eshop.catalog.exception.DomainException;
 import com.gachokaerick.eshop.catalog.model.CatalogBrandDTO;
 import com.gachokaerick.eshop.catalog.model.CatalogTypeDTO;
@@ -235,8 +233,7 @@ public class CatalogItemDomainTest {
     @Test
     public void testWithRestockExceedingMaxStock() {
         CatalogItemDTO itemDTO = getDTO();
-        itemDTO.setRestockThreshold(10);
-        itemDTO.setMaxStockThreshold(5);
+        itemDTO.setRestockThreshold(40);
         Exception exception = assertThrows(
             DomainException.class,
             () -> {
