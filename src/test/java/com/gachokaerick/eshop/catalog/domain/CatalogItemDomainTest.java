@@ -214,4 +214,113 @@ public class CatalogItemDomainTest {
             }
         );
     }
+
+    @Test
+    public void testWithAvailableStockExceedingMaxStock() {
+        CatalogItemDTO itemDTO = getDTO();
+        itemDTO.setAvailableStock(10);
+        itemDTO.setMaxStockThreshold(5);
+        Exception exception = assertThrows(
+            DomainException.class,
+            () -> {
+                new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+            }
+        );
+        String expected = "available stock should not exceed maximum stock threshold";
+        String actual = exception.getMessage();
+        assertTrue(actual.contains(expected));
+    }
+
+    @Test
+    public void testWithRestockExceedingMaxStock() {
+        CatalogItemDTO itemDTO = getDTO();
+        itemDTO.setRestockThreshold(10);
+        itemDTO.setMaxStockThreshold(5);
+        Exception exception = assertThrows(
+            DomainException.class,
+            () -> {
+                new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+            }
+        );
+        String expected = "restockThreshold should not exceed maximum stock threshold";
+        String actual = exception.getMessage();
+        assertTrue(actual.contains(expected));
+    }
+
+    @Test
+    public void testWithNonExistingBrand() {
+        CatalogItemDTO itemDTO = getDTO();
+        itemDTO.setCatalogBrand(new CatalogBrandDTO(null, "brand"));
+        Exception exception = assertThrows(
+            DomainException.class,
+            () -> {
+                new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+            }
+        );
+        String expected = "catalog brand for this item must exist";
+        String actual = exception.getMessage();
+        assertTrue(actual.contains(expected));
+    }
+
+    @Test
+    public void testWithNonExistingType() {
+        CatalogItemDTO itemDTO = getDTO();
+        itemDTO.setCatalogType(new CatalogTypeDTO(null, "type"));
+        Exception exception = assertThrows(
+            DomainException.class,
+            () -> {
+                new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+            }
+        );
+        String expected = "catalog type for this item must exist";
+        String actual = exception.getMessage();
+        assertTrue(actual.contains(expected));
+    }
+
+    @Test
+    public void testStockDeduction() {
+        assertAll(
+            () -> {
+                CatalogItemDTO itemDTO = getDTO();
+                itemDTO.setAvailableStock(0);
+                Exception exception = assertThrows(
+                    DomainException.class,
+                    () -> {
+                        CatalogItemDomain domain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+                        domain.removeStock(1);
+                    }
+                );
+                String expected = "Empty stock. Product " + itemDTO.getName() + " is sold out";
+                String actual = exception.getMessage();
+                assertTrue(actual.contains(expected));
+            },
+            () -> {
+                CatalogItemDTO itemDTO = getDTO();
+                Exception exception = assertThrows(
+                    DomainException.class,
+                    () -> {
+                        CatalogItemDomain domain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+                        domain.removeStock(-1);
+                    }
+                );
+                String expected = "Units to remove should be greater than zero";
+                String actual = exception.getMessage();
+                assertTrue(actual.contains(expected));
+            },
+            () -> {
+                CatalogItemDTO itemDTO = getDTO();
+                CatalogItemDomain domain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+                int removed = domain.removeStock(5);
+                assertEquals(5, removed);
+                assertEquals(15, domain.getCatalogItemDTO().getAvailableStock());
+            },
+            () -> {
+                CatalogItemDTO itemDTO = getDTO();
+                CatalogItemDomain domain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+                int removed = domain.removeStock(25);
+                assertEquals(availableStock, removed);
+                assertEquals(0, domain.getCatalogItemDTO().getAvailableStock());
+            }
+        );
+    }
 }

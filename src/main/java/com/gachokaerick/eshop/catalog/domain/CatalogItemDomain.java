@@ -31,13 +31,10 @@ public class CatalogItemDomain {
      */
     public int removeStock(int quantityDesired) {
         if (catalogItemDTO.getAvailableStock() == 0) {
-            throw DomainException.throwDomainException(
-                domainName,
-                "Empty stock. " + "Product " + catalogItemDTO.getName() + " is sold out"
-            );
+            throw DomainException.throwDomainException(domainName, "Empty stock. Product " + catalogItemDTO.getName() + " is sold out");
         }
         if (quantityDesired <= 0) {
-            throw DomainException.throwDomainException(domainName, "Item units desired should be greater than zero");
+            throw DomainException.throwDomainException(domainName, "Units to remove should be greater than zero");
         }
 
         int removed = Math.min(quantityDesired, catalogItemDTO.getAvailableStock());
@@ -62,6 +59,10 @@ public class CatalogItemDomain {
 
         catalogItemDTO.setOnReorder(false);
         return catalogItemDTO.getAvailableStock() - original;
+    }
+
+    public CatalogItemDTO getCatalogItemDTO() {
+        return catalogItemDTO;
     }
 
     public static class CatalogItemBuilder {
