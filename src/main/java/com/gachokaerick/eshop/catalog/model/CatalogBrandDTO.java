@@ -16,6 +16,13 @@ public class CatalogBrandDTO implements Serializable {
     @NotNull
     private String brand;
 
+    public CatalogBrandDTO() {}
+
+    public CatalogBrandDTO(Long id, String brand) {
+        this.id = id;
+        this.brand = brand;
+    }
+
     public Long getId() {
         return id;
     }

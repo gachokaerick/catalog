@@ -16,6 +16,13 @@ public class CatalogTypeDTO implements Serializable {
     @NotNull
     private String type;
 
+    public CatalogTypeDTO() {}
+
+    public CatalogTypeDTO(Long id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+
     public Long getId() {
         return id;
     }

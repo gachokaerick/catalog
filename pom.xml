@@ -804,6 +804,12 @@
                             <exclude>**/*IntTest*</exclude>
                         </excludes>
                     </configuration>
+                    <dependencies>
+<!--                        <dependency>-->
+<!--                            <groupId></groupId>-->
+<!--                            <artifactId></artifactId>-->
+<!--                        </dependency>-->
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

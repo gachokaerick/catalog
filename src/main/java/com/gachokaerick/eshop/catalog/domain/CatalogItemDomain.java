@@ -3,17 +3,18 @@ package com.gachokaerick.eshop.catalog.domain;
 import com.gachokaerick.eshop.catalog.exception.DomainException;
 import com.gachokaerick.eshop.catalog.model.CatalogItemDTO;
 import java.math.BigDecimal;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Erick Gachoka
  */
-public class CatalogItem {
+public class CatalogItemDomain {
 
     static final String domainName = "CatalogItem";
 
-    private CatalogItemDTO catalogItemDTO;
+    private final CatalogItemDTO catalogItemDTO;
 
-    private CatalogItem(CatalogItemBuilder builder) {
+    private CatalogItemDomain(CatalogItemBuilder builder) {
         catalogItemDTO = builder.catalogItemDTO;
     }
 
@@ -69,12 +70,12 @@ public class CatalogItem {
 
         public CatalogItemBuilder() {}
 
-        public CatalogItemBuilder withCatalogItemDTO(CatalogItemDTO catalogItemDTO) {
+        public CatalogItemBuilder withCatalogItemDTO(@NotNull CatalogItemDTO catalogItemDTO) {
             this.catalogItemDTO = catalogItemDTO;
             return this;
         }
 
-        public CatalogItem build() {
+        private boolean isAcceptable() {
             if (this.catalogItemDTO == null) {
                 throw DomainException.throwDomainException(domainName, "CatalogItemDTO cannot be null");
             }
@@ -116,7 +117,14 @@ public class CatalogItem {
             if (this.catalogItemDTO.getCatalogType().getId() == null) {
                 throw DomainException.throwDomainException(domainName, "catalog type for this item must exist");
             }
-            return new CatalogItem(this);
+            return true;
+        }
+
+        public CatalogItemDomain build() {
+            if (isAcceptable()) {
+                return new CatalogItemDomain(this);
+            }
+            throw DomainException.throwDomainException(domainName, "cannot build a catalog with invalid data");
         }
     }
 }

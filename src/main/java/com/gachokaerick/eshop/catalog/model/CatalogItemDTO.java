@@ -53,6 +53,36 @@ public class CatalogItemDTO implements Serializable {
 
     private CatalogTypeDTO catalogType;
 
+    public CatalogItemDTO() {}
+
+    public CatalogItemDTO(
+        Long id,
+        String name,
+        String description,
+        BigDecimal price,
+        String pictureFileName,
+        String pictureUrl,
+        Integer availableStock,
+        Integer restockThreshold,
+        Integer maxStockThreshold,
+        Boolean onReorder,
+        CatalogBrandDTO catalogBrand,
+        CatalogTypeDTO catalogType
+    ) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.pictureFileName = pictureFileName;
+        this.pictureUrl = pictureUrl;
+        this.availableStock = availableStock;
+        this.restockThreshold = restockThreshold;
+        this.maxStockThreshold = maxStockThreshold;
+        this.onReorder = onReorder;
+        this.catalogBrand = catalogBrand;
+        this.catalogType = catalogType;
+    }
+
     public Long getId() {
         return id;
     }
