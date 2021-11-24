@@ -323,4 +323,24 @@ public class CatalogItemDomainTest {
             }
         );
     }
+
+    @Test
+    public void testStockAddition() {
+        assertAll(
+            () -> {
+                CatalogItemDTO itemDTO = getDTO();
+                CatalogItemDomain domain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+                int added = domain.addStock(15);
+                assertEquals(maxStockThreshold - availableStock, added);
+                assertEquals(maxStockThreshold, domain.getCatalogItemDTO().getAvailableStock());
+            },
+            () -> {
+                CatalogItemDTO itemDTO = getDTO();
+                CatalogItemDomain domain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(itemDTO).build();
+                int added = domain.addStock(5);
+                assertEquals(5, added);
+                assertEquals(availableStock + 5, domain.getCatalogItemDTO().getAvailableStock());
+            }
+        );
+    }
 }
