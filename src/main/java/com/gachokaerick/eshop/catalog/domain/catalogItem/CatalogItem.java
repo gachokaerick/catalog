@@ -1,5 +1,7 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
+import com.gachokaerick.eshop.catalog.model.CatalogBrand;
+import com.gachokaerick.eshop.catalog.model.CatalogType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.*;
@@ -13,7 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "catalog_item")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CatalogItem implements Serializable {
+class CatalogItem implements Serializable {
 
     protected CatalogItem() {}
 

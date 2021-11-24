@@ -1,7 +1,6 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
-import com.gachokaerick.eshop.catalog.model.CatalogItemDTO;
-import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.service.CatalogItemService;
 import com.gachokaerick.eshop.catalog.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -25,7 +24,7 @@ import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
- * REST controller for managing {@link com.gachokaerick.eshop.catalog.model.CatalogItem}.
+ * REST controller for managing CatalogItems.
  */
 @RestController
 @RequestMapping("/api")
@@ -40,11 +39,8 @@ public class CatalogItemResource {
 
     private final CatalogItemService catalogItemService;
 
-    private final CatalogItemRepository catalogItemRepository;
-
-    public CatalogItemResource(CatalogItemService catalogItemService, CatalogItemRepository catalogItemRepository) {
+    public CatalogItemResource(CatalogItemService catalogItemService) {
         this.catalogItemService = catalogItemService;
-        this.catalogItemRepository = catalogItemRepository;
     }
 
     /**
@@ -60,7 +56,7 @@ public class CatalogItemResource {
         if (catalogItemDTO.getId() != null) {
             throw new BadRequestAlertException("A new catalogItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CatalogItemDTO result = catalogItemService.save(catalogItemDTO);
+        CatalogItemDTO result = catalogItemService.create(catalogItemDTO);
         return ResponseEntity
             .created(new URI("/api/catalog-items/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -70,7 +66,7 @@ public class CatalogItemResource {
     /**
      * {@code PUT  /catalog-items/:id} : Updates an existing catalogItem.
      *
-     * @param id the id of the catalogItemDTO to save.
+     * @param id             the id of the catalogItemDTO to save.
      * @param catalogItemDTO the catalogItemDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated catalogItemDTO,
      * or with status {@code 400 (Bad Request)} if the catalogItemDTO is not valid,
@@ -90,11 +86,7 @@ public class CatalogItemResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!catalogItemRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        CatalogItemDTO result = catalogItemService.save(catalogItemDTO);
+        CatalogItemDTO result = catalogItemService.update(catalogItemDTO);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItemDTO.getId().toString()))
@@ -104,7 +96,7 @@ public class CatalogItemResource {
     /**
      * {@code PATCH  /catalog-items/:id} : Partial updates given fields of an existing catalogItem, field will ignore if it is null
      *
-     * @param id the id of the catalogItemDTO to save.
+     * @param id             the id of the catalogItemDTO to save.
      * @param catalogItemDTO the catalogItemDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated catalogItemDTO,
      * or with status {@code 400 (Bad Request)} if the catalogItemDTO is not valid,
@@ -123,10 +115,6 @@ public class CatalogItemResource {
         }
         if (!Objects.equals(id, catalogItemDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!catalogItemRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
         Optional<CatalogItemDTO> result = catalogItemService.partialUpdate(catalogItemDTO);

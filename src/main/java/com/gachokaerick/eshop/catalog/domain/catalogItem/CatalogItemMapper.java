@@ -1,5 +1,8 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
+import com.gachokaerick.eshop.catalog.model.CatalogBrandMapper;
+import com.gachokaerick.eshop.catalog.model.CatalogTypeMapper;
+import com.gachokaerick.eshop.catalog.model.EntityMapper;
 import org.mapstruct.*;
 
 /**

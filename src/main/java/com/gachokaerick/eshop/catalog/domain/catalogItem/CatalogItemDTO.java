@@ -1,5 +1,7 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
+import com.gachokaerick.eshop.catalog.model.CatalogBrandDTO;
+import com.gachokaerick.eshop.catalog.model.CatalogTypeDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -8,7 +10,7 @@ import java.util.Objects;
 import javax.validation.constraints.*;
 
 /**
- * A DTO for the {@link com.gachokaerick.eshop.catalog.model.CatalogItem} entity.
+ * A DTO for the {@link CatalogItem} entity.
  */
 @ApiModel(description = "@author Erick Gachoka")
 public class CatalogItemDTO implements Serializable {

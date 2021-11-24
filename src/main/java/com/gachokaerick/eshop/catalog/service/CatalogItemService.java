@@ -1,33 +1,27 @@
 package com.gachokaerick.eshop.catalog.service;
 
-import com.gachokaerick.eshop.catalog.model.CatalogItem;
-import com.gachokaerick.eshop.catalog.model.CatalogItemDTO;
-import com.gachokaerick.eshop.catalog.model.CatalogItemMapper;
-import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDTO;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomainRepository;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service Implementation for managing {@link CatalogItem}.
+ * Service Implementation for managing CatalogItems.
  */
 @Service
-@Transactional
 public class CatalogItemService {
 
     private final Logger log = LoggerFactory.getLogger(CatalogItemService.class);
 
-    private final CatalogItemRepository catalogItemRepository;
+    private final CatalogItemDomainRepository catalogItemDomainRepository;
 
-    private final CatalogItemMapper catalogItemMapper;
-
-    public CatalogItemService(CatalogItemRepository catalogItemRepository, CatalogItemMapper catalogItemMapper) {
-        this.catalogItemRepository = catalogItemRepository;
-        this.catalogItemMapper = catalogItemMapper;
+    public CatalogItemService(CatalogItemDomainRepository catalogItemDomainRepository) {
+        this.catalogItemDomainRepository = catalogItemDomainRepository;
     }
 
     /**
@@ -36,11 +30,16 @@ public class CatalogItemService {
      * @param catalogItemDTO the entity to save.
      * @return the persisted entity.
      */
-    public CatalogItemDTO save(CatalogItemDTO catalogItemDTO) {
-        log.debug("Request to save CatalogItem : {}", catalogItemDTO);
-        CatalogItem catalogItem = catalogItemMapper.toEntity(catalogItemDTO);
-        catalogItem = catalogItemRepository.save(catalogItem);
-        return catalogItemMapper.toDto(catalogItem);
+    public CatalogItemDTO create(CatalogItemDTO catalogItemDTO) {
+        log.debug("Request to create a CatalogItem : {}", catalogItemDTO);
+        CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItemDTO).build();
+        return catalogItemDomainRepository.create(catalogItemDomain);
+    }
+
+    public CatalogItemDTO update(CatalogItemDTO catalogItemDTO) {
+        log.debug("Request to update a CatalogItem : {}", catalogItemDTO);
+        CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItemDTO).build();
+        return catalogItemDomainRepository.update(catalogItemDomain);
     }
 
     /**
@@ -51,16 +50,8 @@ public class CatalogItemService {
      */
     public Optional<CatalogItemDTO> partialUpdate(CatalogItemDTO catalogItemDTO) {
         log.debug("Request to partially update CatalogItem : {}", catalogItemDTO);
-
-        return catalogItemRepository
-            .findById(catalogItemDTO.getId())
-            .map(existingCatalogItem -> {
-                catalogItemMapper.partialUpdate(existingCatalogItem, catalogItemDTO);
-
-                return existingCatalogItem;
-            })
-            .map(catalogItemRepository::save)
-            .map(catalogItemMapper::toDto);
+        CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItemDTO).build();
+        return catalogItemDomainRepository.partialUpdate(catalogItemDomain);
     }
 
     /**
@@ -69,10 +60,9 @@ public class CatalogItemService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
     public Page<CatalogItemDTO> findAll(Pageable pageable) {
         log.debug("Request to get all CatalogItems");
-        return catalogItemRepository.findAll(pageable).map(catalogItemMapper::toDto);
+        return catalogItemDomainRepository.findAll(pageable);
     }
 
     /**
@@ -81,10 +71,10 @@ public class CatalogItemService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
+
     public Optional<CatalogItemDTO> findOne(Long id) {
         log.debug("Request to get CatalogItem : {}", id);
-        return catalogItemRepository.findById(id).map(catalogItemMapper::toDto);
+        return catalogItemDomainRepository.findOne(id);
     }
 
     /**
@@ -94,6 +84,6 @@ public class CatalogItemService {
      */
     public void delete(Long id) {
         log.debug("Request to delete CatalogItem : {}", id);
-        catalogItemRepository.deleteById(id);
+        catalogItemDomainRepository.delete(id);
     }
 }

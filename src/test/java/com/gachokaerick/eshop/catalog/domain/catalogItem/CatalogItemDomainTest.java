@@ -1,10 +1,11 @@
-package com.gachokaerick.eshop.catalog.domain;
+package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDTO;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
 import com.gachokaerick.eshop.catalog.exception.DomainException;
 import com.gachokaerick.eshop.catalog.model.CatalogBrandDTO;
-import com.gachokaerick.eshop.catalog.model.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.model.CatalogTypeDTO;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Tag;

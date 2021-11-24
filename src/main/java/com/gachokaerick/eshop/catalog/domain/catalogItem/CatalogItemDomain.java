@@ -1,7 +1,6 @@
-package com.gachokaerick.eshop.catalog.domain;
+package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
 import com.gachokaerick.eshop.catalog.exception.DomainException;
-import com.gachokaerick.eshop.catalog.model.CatalogItemDTO;
 import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 

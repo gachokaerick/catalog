@@ -1,4 +1,4 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
