@@ -100,12 +100,22 @@ public class CatalogItemDTO implements Serializable {
         this.name = name;
     }
 
+    public CatalogItemDTO name(String name) {
+        this.name = name;
+        return this;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public CatalogItemDTO description(String description) {
+        this.description = description;
+        return this;
     }
 
     public BigDecimal getPrice() {
@@ -116,12 +126,22 @@ public class CatalogItemDTO implements Serializable {
         this.price = price;
     }
 
+    public CatalogItemDTO price(BigDecimal price) {
+        this.price = price;
+        return this;
+    }
+
     public String getPictureFileName() {
         return pictureFileName;
     }
 
     public void setPictureFileName(String pictureFileName) {
         this.pictureFileName = pictureFileName;
+    }
+
+    public CatalogItemDTO pictureFileName(String pictureFileName) {
+        this.pictureFileName = pictureFileName;
+        return this;
     }
 
     public String getPictureUrl() {
@@ -132,12 +152,22 @@ public class CatalogItemDTO implements Serializable {
         this.pictureUrl = pictureUrl;
     }
 
+    public CatalogItemDTO pictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+        return this;
+    }
+
     public Integer getAvailableStock() {
         return availableStock;
     }
 
     public void setAvailableStock(Integer availableStock) {
         this.availableStock = availableStock;
+    }
+
+    public CatalogItemDTO availableStock(Integer availableStock) {
+        this.availableStock = availableStock;
+        return this;
     }
 
     public Integer getRestockThreshold() {
@@ -148,12 +178,22 @@ public class CatalogItemDTO implements Serializable {
         this.restockThreshold = restockThreshold;
     }
 
+    public CatalogItemDTO restockThreshold(Integer restockThreshold) {
+        this.restockThreshold = restockThreshold;
+        return this;
+    }
+
     public Integer getMaxStockThreshold() {
         return maxStockThreshold;
     }
 
     public void setMaxStockThreshold(Integer maxStockThreshold) {
         this.maxStockThreshold = maxStockThreshold;
+    }
+
+    public CatalogItemDTO maxStockThreshold(Integer maxStockThreshold) {
+        this.maxStockThreshold = maxStockThreshold;
+        return this;
     }
 
     public Boolean getOnReorder() {
@@ -164,6 +204,11 @@ public class CatalogItemDTO implements Serializable {
         this.onReorder = onReorder;
     }
 
+    public CatalogItemDTO onReorder(Boolean onReorder) {
+        this.onReorder = onReorder;
+        return this;
+    }
+
     public CatalogBrandDTO getCatalogBrand() {
         return catalogBrand;
     }
@@ -172,12 +217,22 @@ public class CatalogItemDTO implements Serializable {
         this.catalogBrand = catalogBrand;
     }
 
+    public CatalogItemDTO catalogBrand(CatalogBrandDTO catalogBrand) {
+        this.catalogBrand = catalogBrand;
+        return this;
+    }
+
     public CatalogTypeDTO getCatalogType() {
         return catalogType;
     }
 
     public void setCatalogType(CatalogTypeDTO catalogType) {
         this.catalogType = catalogType;
+    }
+
+    public CatalogItemDTO catalogType(CatalogTypeDTO catalogType) {
+        this.catalogType = catalogType;
+        return this;
     }
 
     @Override
