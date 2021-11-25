@@ -14,7 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CatalogBrand implements Serializable {
 
-    protected CatalogBrand() {}
+    public CatalogBrand() {}
 
     private static final long serialVersionUID = 1L;
 
@@ -34,12 +34,12 @@ public class CatalogBrand implements Serializable {
         return this.id;
     }
 
-    CatalogBrand id(Long id) {
+    public CatalogBrand id(Long id) {
         this.setId(id);
         return this;
     }
 
-    void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -47,12 +47,12 @@ public class CatalogBrand implements Serializable {
         return this.brand;
     }
 
-    CatalogBrand brand(String brand) {
+    public CatalogBrand brand(String brand) {
         this.setBrand(brand);
         return this;
     }
 
-    void setBrand(String brand) {
+    public void setBrand(String brand) {
         this.brand = brand;
     }
 

@@ -15,9 +15,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "catalog_item")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-class CatalogItem implements Serializable {
+public class CatalogItem implements Serializable {
 
-    protected CatalogItem() {}
+    public CatalogItem() {}
 
     private static final long serialVersionUID = 1L;
 

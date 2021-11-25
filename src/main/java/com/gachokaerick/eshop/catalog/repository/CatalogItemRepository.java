@@ -1,4 +1,4 @@
-package com.gachokaerick.eshop.catalog.domain.catalogItem;
+package com.gachokaerick.eshop.catalog.repository;
 
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItem;
 import org.springframework.data.jpa.repository.*;
@@ -9,4 +9,4 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-interface CatalogItemRepository extends JpaRepository<CatalogItem, Long> {}
+public interface CatalogItemRepository extends JpaRepository<CatalogItem, Long> {}
