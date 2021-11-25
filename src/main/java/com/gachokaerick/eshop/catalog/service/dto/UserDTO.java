@@ -1,4 +1,4 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.service.dto;
 
 import com.gachokaerick.eshop.catalog.model.User;
 

@@ -1,5 +1,7 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.service.mapper;
 
+import com.gachokaerick.eshop.catalog.model.CatalogType;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogTypeDTO;
 import org.mapstruct.*;
 
 /**

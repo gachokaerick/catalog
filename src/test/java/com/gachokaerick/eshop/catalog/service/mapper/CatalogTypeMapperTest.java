@@ -1,9 +1,8 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.gachokaerick.eshop.catalog.model.CatalogTypeMapper;
-import com.gachokaerick.eshop.catalog.model.CatalogTypeMapperImpl;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapper;
 import org.junit.jupiter.api.BeforeEach;
 
 class CatalogTypeMapperTest {

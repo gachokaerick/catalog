@@ -1,7 +1,11 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.gachokaerick.eshop.catalog.model.User;
+import com.gachokaerick.eshop.catalog.service.dto.AdminUserDTO;
+import com.gachokaerick.eshop.catalog.service.dto.UserDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.UserMapper;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

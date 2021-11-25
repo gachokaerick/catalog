@@ -1,8 +1,8 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
-import com.gachokaerick.eshop.catalog.model.CatalogTypeDTO;
 import com.gachokaerick.eshop.catalog.repository.CatalogTypeRepository;
 import com.gachokaerick.eshop.catalog.service.CatalogTypeService;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogTypeDTO;
 import com.gachokaerick.eshop.catalog.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;

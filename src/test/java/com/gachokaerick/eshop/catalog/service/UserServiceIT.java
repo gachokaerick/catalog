@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gachokaerick.eshop.catalog.IntegrationTest;
 import com.gachokaerick.eshop.catalog.config.Constants;
-import com.gachokaerick.eshop.catalog.model.AdminUserDTO;
 import com.gachokaerick.eshop.catalog.model.User;
 import com.gachokaerick.eshop.catalog.repository.UserRepository;
 import com.gachokaerick.eshop.catalog.security.AuthoritiesConstants;
+import com.gachokaerick.eshop.catalog.service.dto.AdminUserDTO;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;

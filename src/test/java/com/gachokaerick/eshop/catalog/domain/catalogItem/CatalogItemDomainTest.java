@@ -3,8 +3,9 @@ package com.gachokaerick.eshop.catalog.domain.catalogItem;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.gachokaerick.eshop.catalog.exception.DomainException;
-import com.gachokaerick.eshop.catalog.model.CatalogBrandDTO;
-import com.gachokaerick.eshop.catalog.model.CatalogTypeDTO;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogBrandDTO;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogTypeDTO;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

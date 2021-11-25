@@ -8,9 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.gachokaerick.eshop.catalog.IntegrationTest;
 import com.gachokaerick.eshop.catalog.model.CatalogBrand;
-import com.gachokaerick.eshop.catalog.model.CatalogBrandDTO;
-import com.gachokaerick.eshop.catalog.model.CatalogBrandMapper;
 import com.gachokaerick.eshop.catalog.repository.CatalogBrandRepository;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogBrandDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;

@@ -1,7 +1,8 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.service.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.gachokaerick.eshop.catalog.service.dto.CatalogTypeDTO;
 import com.gachokaerick.eshop.catalog.web.rest.TestUtil;
 import org.junit.jupiter.api.Test;
 

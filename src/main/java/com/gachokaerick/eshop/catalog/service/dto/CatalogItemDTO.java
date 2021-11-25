@@ -1,7 +1,6 @@
-package com.gachokaerick.eshop.catalog.domain.catalogItem;
+package com.gachokaerick.eshop.catalog.service.dto;
 
-import com.gachokaerick.eshop.catalog.model.CatalogBrandDTO;
-import com.gachokaerick.eshop.catalog.model.CatalogTypeDTO;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;

@@ -1,7 +1,7 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
-import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.service.CatalogItemService;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;

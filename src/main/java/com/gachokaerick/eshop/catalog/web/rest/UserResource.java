@@ -1,9 +1,9 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
 import com.gachokaerick.eshop.catalog.config.Constants;
-import com.gachokaerick.eshop.catalog.model.AdminUserDTO;
 import com.gachokaerick.eshop.catalog.security.AuthoritiesConstants;
 import com.gachokaerick.eshop.catalog.service.UserService;
+import com.gachokaerick.eshop.catalog.service.dto.AdminUserDTO;
 import java.util.*;
 import javax.validation.constraints.Pattern;
 import org.slf4j.Logger;

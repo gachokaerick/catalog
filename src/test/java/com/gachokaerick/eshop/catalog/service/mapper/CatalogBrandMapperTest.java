@@ -1,7 +1,8 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapper;
 import org.junit.jupiter.api.BeforeEach;
 
 class CatalogBrandMapperTest {

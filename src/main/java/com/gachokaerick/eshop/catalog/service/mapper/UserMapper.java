@@ -1,5 +1,9 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.service.mapper;
 
+import com.gachokaerick.eshop.catalog.model.Authority;
+import com.gachokaerick.eshop.catalog.model.User;
+import com.gachokaerick.eshop.catalog.service.dto.AdminUserDTO;
+import com.gachokaerick.eshop.catalog.service.dto.UserDTO;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.mapstruct.BeanMapping;

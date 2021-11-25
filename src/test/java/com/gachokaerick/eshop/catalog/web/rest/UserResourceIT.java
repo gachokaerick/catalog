@@ -7,12 +7,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.gachokaerick.eshop.catalog.IntegrationTest;
-import com.gachokaerick.eshop.catalog.model.AdminUserDTO;
 import com.gachokaerick.eshop.catalog.model.Authority;
 import com.gachokaerick.eshop.catalog.model.User;
-import com.gachokaerick.eshop.catalog.model.UserMapper;
 import com.gachokaerick.eshop.catalog.repository.UserRepository;
 import com.gachokaerick.eshop.catalog.security.AuthoritiesConstants;
+import com.gachokaerick.eshop.catalog.service.dto.AdminUserDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.UserMapper;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;

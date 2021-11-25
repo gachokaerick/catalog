@@ -1,4 +1,4 @@
-package com.gachokaerick.eshop.catalog.model;
+package com.gachokaerick.eshop.catalog.service.mapper;
 
 import java.util.List;
 import org.mapstruct.BeanMapping;

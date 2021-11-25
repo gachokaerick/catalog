@@ -1,8 +1,8 @@
 package com.gachokaerick.eshop.catalog.service;
 
-import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomainRepository;
+import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
