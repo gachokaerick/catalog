@@ -9,13 +9,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.gachokaerick.eshop.catalog.IntegrationTest;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItem;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapper;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapperImpl;
 import com.gachokaerick.eshop.catalog.model.CatalogBrand;
 import com.gachokaerick.eshop.catalog.model.CatalogType;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapper;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapperImpl;
 import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapper;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapperImpl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
@@ -69,7 +73,7 @@ class CatalogItemResourceIT {
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
     private static final Random random = new Random();
-    private static final AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    private static final AtomicLong count = new AtomicLong(random.nextInt() + (2L * Integer.MAX_VALUE));
 
     @Autowired
     private CatalogItemRepository catalogItemRepository;
@@ -97,7 +101,11 @@ class CatalogItemResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public CatalogItem createEntity(EntityManager em) {
+    public static CatalogItem createEntity(EntityManager em) {
+        CatalogItemMapper catalogItemMapper = new CatalogItemMapperImpl();
+        CatalogBrandMapper catalogBrandMapper = new CatalogBrandMapperImpl();
+        CatalogTypeMapper catalogTypeMapper = new CatalogTypeMapperImpl();
+
         // Add required entity
         CatalogBrand catalogBrand;
         if (TestUtil.findAll(em, CatalogBrand.class).isEmpty()) {
@@ -132,7 +140,7 @@ class CatalogItemResourceIT {
             catalogTypeMapper.toDto(catalogType)
         );
 
-        return catalogItemMapper.toEntity(catalogItem);
+        return new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItem).build().getCatalogItem();
     }
 
     /**
@@ -175,11 +183,13 @@ class CatalogItemResourceIT {
             catalogTypeMapper.toDto(catalogType)
         );
 
-        return catalogItemMapper.toEntity(catalogItem);
+        CatalogItem entity = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItem).build().getCatalogItem();
+        return entity;
     }
 
     @BeforeEach
     public void initTest() {
+        System.out.println("CatalogItemResourceIT.initTest");
         catalogItem = createEntity(em);
     }
 
@@ -535,7 +545,7 @@ class CatalogItemResourceIT {
         int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
 
         // Update the catalogItem using partial update
-        CatalogItemDTO partialUpdatedCatalogItem = new CatalogItemDTO();
+        CatalogItemDTO partialUpdatedCatalogItem = catalogItemMapper.toDto(catalogItem);
         partialUpdatedCatalogItem.setId(catalogItem.getId());
 
         partialUpdatedCatalogItem
@@ -549,7 +559,7 @@ class CatalogItemResourceIT {
                 patch(ENTITY_API_URL_ID, partialUpdatedCatalogItem.getId())
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItemMapper.toEntity(partialUpdatedCatalogItem)))
+                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedCatalogItem))
             )
             .andExpect(status().isOk());
 
@@ -577,7 +587,7 @@ class CatalogItemResourceIT {
         int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
 
         // Update the catalogItem using partial update
-        CatalogItemDTO partialUpdatedCatalogItem = new CatalogItemDTO();
+        CatalogItemDTO partialUpdatedCatalogItem = catalogItemMapper.toDto(catalogItem);
         partialUpdatedCatalogItem.setId(catalogItem.getId());
 
         partialUpdatedCatalogItem
@@ -596,7 +606,7 @@ class CatalogItemResourceIT {
                 patch(ENTITY_API_URL_ID, partialUpdatedCatalogItem.getId())
                     .with(csrf())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(catalogItemMapper.toEntity(partialUpdatedCatalogItem)))
+                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedCatalogItem))
             )
             .andExpect(status().isOk());
 

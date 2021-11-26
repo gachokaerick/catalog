@@ -28,7 +28,7 @@ public class CatalogItemDomainRepositoryImpl implements CatalogItemDomainReposit
         if (catalogItemDomain.getCatalogItemDTO().getId() != null) {
             throw new BadRequestAlertException("A new catalogItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CatalogItem catalogItem = catalogItemMapper.toEntity(catalogItemDomain.getCatalogItemDTO());
+        CatalogItem catalogItem = catalogItemDomain.getCatalogItem();
         catalogItem = catalogItemRepository.save(catalogItem);
         return catalogItemMapper.toDto(catalogItem);
     }
@@ -43,25 +43,28 @@ public class CatalogItemDomainRepositoryImpl implements CatalogItemDomainReposit
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CatalogItem catalogItem = catalogItemMapper.toEntity(catalogItemDomain.getCatalogItemDTO());
+        CatalogItem catalogItem = catalogItemDomain.getCatalogItem();
         catalogItem = catalogItemRepository.save(catalogItem);
         return catalogItemMapper.toDto(catalogItem);
     }
 
     @Override
     public Optional<CatalogItemDTO> partialUpdate(CatalogItemDomain catalogItemDomain) {
-        if (catalogItemDomain.getCatalogItemDTO().getId() == null) {
+        long items = catalogItemRepository.count();
+        CatalogItemDTO catalogItemDTO = catalogItemDomain.getCatalogItemDTO();
+
+        if (catalogItemDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
 
-        if (!catalogItemRepository.existsById(catalogItemDomain.getCatalogItemDTO().getId())) {
+        if (!catalogItemRepository.existsById(catalogItemDTO.getId())) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
         return catalogItemRepository
-            .findById(catalogItemDomain.getCatalogItemDTO().getId())
+            .findById(catalogItemDTO.getId())
             .map(existingCatalogItem -> {
-                catalogItemMapper.partialUpdate(existingCatalogItem, catalogItemDomain.getCatalogItemDTO());
+                catalogItemMapper.partialUpdate(existingCatalogItem, catalogItemDTO);
                 return existingCatalogItem;
             })
             .map(catalogItemRepository::save)

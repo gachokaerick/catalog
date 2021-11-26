@@ -1,5 +1,6 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
+import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
 import com.gachokaerick.eshop.catalog.service.CatalogItemService;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.web.rest.errors.BadRequestAlertException;
@@ -39,8 +40,11 @@ public class CatalogItemResource {
 
     private final CatalogItemService catalogItemService;
 
-    public CatalogItemResource(CatalogItemService catalogItemService) {
+    private final CatalogItemRepository catalogItemRepository;
+
+    public CatalogItemResource(CatalogItemService catalogItemService, CatalogItemRepository catalogItemRepository) {
         this.catalogItemService = catalogItemService;
+        this.catalogItemRepository = catalogItemRepository;
     }
 
     /**
@@ -110,11 +114,16 @@ public class CatalogItemResource {
         @NotNull @RequestBody CatalogItemDTO catalogItemDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update CatalogItem partially : {}, {}", id, catalogItemDTO);
+        long count = catalogItemRepository.count();
         if (catalogItemDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, catalogItemDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!catalogItemRepository.existsById(catalogItemDTO.getId())) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
         Optional<CatalogItemDTO> result = catalogItemService.partialUpdate(catalogItemDTO);

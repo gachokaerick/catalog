@@ -2,6 +2,10 @@ package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
 import com.gachokaerick.eshop.catalog.exception.DomainException;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapper;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapperImpl;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapper;
+import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapperImpl;
 import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 
@@ -61,6 +65,26 @@ public class CatalogItemDomain {
         return catalogItemDTO.getAvailableStock() - original;
     }
 
+    public CatalogItem getCatalogItem() {
+        CatalogItem catalogItem = new CatalogItem();
+        CatalogBrandMapper catalogBrandMapper = new CatalogBrandMapperImpl();
+        CatalogTypeMapper catalogTypeMapper = new CatalogTypeMapperImpl();
+
+        catalogItem.setId(catalogItemDTO.getId());
+        catalogItem.setName(catalogItemDTO.getName());
+        catalogItem.setDescription(catalogItemDTO.getDescription());
+        catalogItem.setPrice(catalogItemDTO.getPrice());
+        catalogItem.setPictureFileName(catalogItemDTO.getPictureFileName());
+        catalogItem.setPictureUrl(catalogItemDTO.getPictureUrl());
+        catalogItem.setAvailableStock(catalogItemDTO.getAvailableStock());
+        catalogItem.setRestockThreshold(catalogItemDTO.getRestockThreshold());
+        catalogItem.setMaxStockThreshold(catalogItemDTO.getMaxStockThreshold());
+        catalogItem.setOnReorder(catalogItemDTO.getOnReorder());
+        catalogItem.setCatalogBrand(catalogBrandMapper.toEntity(catalogItemDTO.getCatalogBrand()));
+        catalogItem.setCatalogType(catalogTypeMapper.toEntity(catalogItemDTO.getCatalogType()));
+        return catalogItem;
+    }
+
     public CatalogItemDTO getCatalogItemDTO() {
         return catalogItemDTO;
     }
@@ -112,10 +136,10 @@ public class CatalogItemDomain {
             if (this.catalogItemDTO.getRestockThreshold() > this.catalogItemDTO.getMaxStockThreshold()) {
                 throw DomainException.throwDomainException(domainName, "restockThreshold should not exceed maximum stock threshold");
             }
-            if (this.catalogItemDTO.getCatalogBrand().getId() == null) {
+            if (this.catalogItemDTO.getCatalogBrand().getId() == null || this.catalogItemDTO.getCatalogBrand().getBrand() == null) {
                 throw DomainException.throwDomainException(domainName, "catalog brand for this item must exist");
             }
-            if (this.catalogItemDTO.getCatalogType().getId() == null) {
+            if (this.catalogItemDTO.getCatalogType().getId() == null || this.catalogItemDTO.getCatalogType().getType() == null) {
                 throw DomainException.throwDomainException(domainName, "catalog type for this item must exist");
             }
             return true;

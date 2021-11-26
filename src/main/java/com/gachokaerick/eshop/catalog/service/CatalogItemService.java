@@ -2,6 +2,7 @@ package com.gachokaerick.eshop.catalog.service;
 
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomainRepository;
+import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -19,9 +20,11 @@ public class CatalogItemService {
     private final Logger log = LoggerFactory.getLogger(CatalogItemService.class);
 
     private final CatalogItemDomainRepository catalogItemDomainRepository;
+    private final CatalogItemRepository catalogItemRepository;
 
-    public CatalogItemService(CatalogItemDomainRepository catalogItemDomainRepository) {
+    public CatalogItemService(CatalogItemDomainRepository catalogItemDomainRepository, CatalogItemRepository catalogItemRepository) {
         this.catalogItemDomainRepository = catalogItemDomainRepository;
+        this.catalogItemRepository = catalogItemRepository;
     }
 
     /**
@@ -50,6 +53,7 @@ public class CatalogItemService {
      */
     public Optional<CatalogItemDTO> partialUpdate(CatalogItemDTO catalogItemDTO) {
         log.debug("Request to partially update CatalogItem : {}", catalogItemDTO);
+        long count = catalogItemRepository.count();
         CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItemDTO).build();
         return catalogItemDomainRepository.partialUpdate(catalogItemDomain);
     }
