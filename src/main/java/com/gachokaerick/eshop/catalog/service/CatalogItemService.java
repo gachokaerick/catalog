@@ -2,10 +2,9 @@ package com.gachokaerick.eshop.catalog.service;
 
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItem;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapper;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
-import com.gachokaerick.eshop.catalog.service.mapper.CatalogItemMapper;
-import com.gachokaerick.eshop.catalog.web.rest.errors.BadRequestAlertException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,12 +60,11 @@ public class CatalogItemService {
      */
     public Optional<CatalogItemDTO> partialUpdate(CatalogItemDTO catalogItemDTO) {
         log.debug("Request to partially update CatalogItem : {}", catalogItemDTO);
-        CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItemDTO).build();
 
         return catalogItemRepository
-            .findById(catalogItemDomain.getCatalogItemDTO().getId())
+            .findById(catalogItemDTO.getId())
             .map(existingCatalogItem -> {
-                catalogItemMapper.partialUpdate(existingCatalogItem, catalogItemDomain.getCatalogItemDTO());
+                catalogItemMapper.partialUpdate(existingCatalogItem, catalogItemDTO);
                 return existingCatalogItem;
             })
             .map(catalogItemRepository::save)

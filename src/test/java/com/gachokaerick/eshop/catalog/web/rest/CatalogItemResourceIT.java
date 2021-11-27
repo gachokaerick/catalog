@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.gachokaerick.eshop.catalog.IntegrationTest;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItem;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapper;
+import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapperImpl;
 import com.gachokaerick.eshop.catalog.model.CatalogBrand;
 import com.gachokaerick.eshop.catalog.model.CatalogType;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
@@ -178,8 +180,7 @@ class CatalogItemResourceIT {
             catalogTypeMapper.toDto(catalogType)
         );
 
-        CatalogItem entity = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItem).build().getCatalogItem();
-        return entity;
+        return new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItem).build().getCatalogItem();
     }
 
     @BeforeEach
