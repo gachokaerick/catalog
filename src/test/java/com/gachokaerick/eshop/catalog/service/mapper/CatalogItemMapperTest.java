@@ -1,6 +1,5 @@
-package com.gachokaerick.eshop.catalog.domain.catalogItem;
+package com.gachokaerick.eshop.catalog.service.mapper;
 
-import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapper;
 import org.junit.jupiter.api.BeforeEach;
 
 class CatalogItemMapperTest {

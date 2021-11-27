@@ -17,6 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CatalogItem implements Serializable {
 
+    // remains public for testUtil equals verifier access
     public CatalogItem() {}
 
     private static final long serialVersionUID = 1L;

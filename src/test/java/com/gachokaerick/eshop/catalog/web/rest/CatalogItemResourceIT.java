@@ -10,16 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.gachokaerick.eshop.catalog.IntegrationTest;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItem;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
-import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapper;
-import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapperImpl;
 import com.gachokaerick.eshop.catalog.model.CatalogBrand;
 import com.gachokaerick.eshop.catalog.model.CatalogType;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
-import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapper;
-import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapperImpl;
-import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapper;
-import com.gachokaerick.eshop.catalog.service.mapper.CatalogTypeMapperImpl;
+import com.gachokaerick.eshop.catalog.service.mapper.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;

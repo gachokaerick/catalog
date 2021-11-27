@@ -86,8 +86,13 @@ public class CatalogItemResource {
         if (catalogItemDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+
         if (!Objects.equals(id, catalogItemDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!catalogItemRepository.existsById(catalogItemDTO.getId())) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
         CatalogItemDTO result = catalogItemService.update(catalogItemDTO);
