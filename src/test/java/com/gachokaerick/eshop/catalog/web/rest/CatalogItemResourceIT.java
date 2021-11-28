@@ -57,17 +57,18 @@ class CatalogItemResourceIT {
     private static final Integer DEFAULT_AVAILABLE_STOCK = 1;
     private static final Integer UPDATED_AVAILABLE_STOCK = 2;
 
-    private static final Integer DEFAULT_RESTOCK_THRESHOLD = 1;
-    private static final Integer UPDATED_RESTOCK_THRESHOLD = 2;
+    private static final Integer DEFAULT_RESTOCK_THRESHOLD = 2;
+    private static final Integer UPDATED_RESTOCK_THRESHOLD = 3;
 
-    private static final Integer DEFAULT_MAX_STOCK_THRESHOLD = 1;
-    private static final Integer UPDATED_MAX_STOCK_THRESHOLD = 2;
+    private static final Integer DEFAULT_MAX_STOCK_THRESHOLD = 3;
+    private static final Integer UPDATED_MAX_STOCK_THRESHOLD = 4;
 
     private static final Boolean DEFAULT_ON_REORDER = false;
     private static final Boolean UPDATED_ON_REORDER = true;
 
     private static final String ENTITY_API_URL = "/api/catalog-items";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+    private static final String ENTITY_API_URL_ID_ADD_STOCK = ENTITY_API_URL + "/add/{quantity}";
 
     private static final Random random = new Random();
     private static final AtomicLong count = new AtomicLong(random.nextInt() + (2L * Integer.MAX_VALUE));
@@ -185,7 +186,6 @@ class CatalogItemResourceIT {
 
     @BeforeEach
     public void initTest() {
-        System.out.println("CatalogItemResourceIT.initTest");
         catalogItem = createEntity(em);
     }
 
@@ -709,5 +709,84 @@ class CatalogItemResourceIT {
         // Validate the database contains one less item
         List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
         assertThat(catalogItemList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    void addStockAboveMaxThreshold() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_ADD_STOCK, catalogItem.getMaxStockThreshold() + 1)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isOk());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+        CatalogItem testCatalogItem = catalogItemList.get(catalogItemList.size() - 1);
+        assertThat(testCatalogItem.getAvailableStock()).isEqualTo(catalogItem.getMaxStockThreshold());
+    }
+
+    @Test
+    @Transactional
+    void addStockEqualToMaxThreshold() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_ADD_STOCK, catalogItem.getMaxStockThreshold())
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isOk());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+        CatalogItem testCatalogItem = catalogItemList.get(catalogItemList.size() - 1);
+        assertThat(testCatalogItem.getAvailableStock()).isEqualTo(catalogItem.getMaxStockThreshold());
+    }
+
+    @Test
+    @Transactional
+    void addStockBelowMaxThreshold() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_ADD_STOCK, 1)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isOk());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+        CatalogItem testCatalogItem = catalogItemList.get(catalogItemList.size() - 1);
+        assertThat(testCatalogItem.getId()).isEqualTo(catalogItem.getId());
+        assertThat(testCatalogItem.getAvailableStock()).isEqualTo(DEFAULT_AVAILABLE_STOCK + 1);
     }
 }

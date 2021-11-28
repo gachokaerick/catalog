@@ -65,6 +65,11 @@ public class CatalogItemService {
             .findById(catalogItemDTO.getId())
             .map(existingCatalogItem -> {
                 catalogItemMapper.partialUpdate(existingCatalogItem, catalogItemDTO);
+
+                // ensure updates made are acceptable
+                CatalogItemDTO dto = catalogItemMapper.toDto(existingCatalogItem);
+                new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(dto).build();
+
                 return existingCatalogItem;
             })
             .map(catalogItemRepository::save)
@@ -102,5 +107,23 @@ public class CatalogItemService {
     public void delete(Long id) {
         log.debug("Request to delete CatalogItem : {}", id);
         catalogItemRepository.deleteById(id);
+    }
+
+    public Optional<CatalogItemDTO> partialUpdateAddStock(CatalogItemDTO catalogItemDTO, int quantity) {
+        log.debug("Request to add stock tp CatalogItem : {}, {}", quantity, catalogItemDTO);
+
+        return catalogItemRepository
+            .findById(catalogItemDTO.getId())
+            .map(existingCatalogItem -> {
+                CatalogItemDTO dto = catalogItemMapper.toDto(existingCatalogItem);
+
+                CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(dto).build();
+                catalogItemDomain.addStock(quantity);
+
+                existingCatalogItem = catalogItemDomain.getCatalogItem();
+                return existingCatalogItem;
+            })
+            .map(catalogItemRepository::save)
+            .map(catalogItemMapper::toDto);
     }
 }

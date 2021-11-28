@@ -119,7 +119,7 @@ public class CatalogItemResource {
         @NotNull @RequestBody CatalogItemDTO catalogItemDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update CatalogItem partially : {}, {}", id, catalogItemDTO);
-        long count = catalogItemRepository.count();
+
         if (catalogItemDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -180,5 +180,32 @@ public class CatalogItemResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PatchMapping(value = "/catalog-items/add/{quantity}", consumes = { "application/json", "application/merge-patch+json" })
+    public ResponseEntity<CatalogItemDTO> partialUpdateCatalogItemAddStock(
+        @PathVariable(value = "quantity") final Integer quantity,
+        @NotNull @RequestBody CatalogItemDTO catalogItemDTO
+    ) throws URISyntaxException {
+        log.debug("REST request to add stock to CatalogItem partially : {}", catalogItemDTO);
+
+        if (catalogItemDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+
+        if (quantity == null || quantity <= 0) {
+            throw new BadRequestAlertException("Quantity to add to stock must be greater than zero", ENTITY_NAME, "quantityInvalid");
+        }
+
+        if (!catalogItemRepository.existsById(catalogItemDTO.getId())) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idNotFound");
+        }
+
+        Optional<CatalogItemDTO> result = catalogItemService.partialUpdateAddStock(catalogItemDTO, quantity);
+
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItemDTO.getId().toString())
+        );
     }
 }
