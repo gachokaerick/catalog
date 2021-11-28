@@ -110,7 +110,7 @@ public class CatalogItemService {
     }
 
     public Optional<CatalogItemDTO> partialUpdateAddStock(CatalogItemDTO catalogItemDTO, int quantity) {
-        log.debug("Request to add stock tp CatalogItem : {}, {}", quantity, catalogItemDTO);
+        log.debug("Request to add stock to CatalogItem : {}, {}", quantity, catalogItemDTO);
 
         return catalogItemRepository
             .findById(catalogItemDTO.getId())
@@ -119,6 +119,24 @@ public class CatalogItemService {
 
                 CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(dto).build();
                 catalogItemDomain.addStock(quantity);
+
+                existingCatalogItem = catalogItemDomain.getCatalogItem();
+                return existingCatalogItem;
+            })
+            .map(catalogItemRepository::save)
+            .map(catalogItemMapper::toDto);
+    }
+
+    public Optional<CatalogItemDTO> partialUpdateRemoveStock(CatalogItemDTO catalogItemDTO, int quantity) {
+        log.debug("Request to remove stock to CatalogItem : {}, {}", quantity, catalogItemDTO);
+
+        return catalogItemRepository
+            .findById(catalogItemDTO.getId())
+            .map(existingCatalogItem -> {
+                CatalogItemDTO dto = catalogItemMapper.toDto(existingCatalogItem);
+
+                CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(dto).build();
+                catalogItemDomain.removeStock(quantity);
 
                 existingCatalogItem = catalogItemDomain.getCatalogItem();
                 return existingCatalogItem;

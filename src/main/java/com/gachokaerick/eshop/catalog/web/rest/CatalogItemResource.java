@@ -208,4 +208,31 @@ public class CatalogItemResource {
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItemDTO.getId().toString())
         );
     }
+
+    @PatchMapping(value = "/catalog-items/remove/{quantity}", consumes = { "application/json", "application/merge-patch+json" })
+    public ResponseEntity<CatalogItemDTO> partialUpdateCatalogItemRemoveStock(
+        @PathVariable(value = "quantity") final Integer quantity,
+        @NotNull @RequestBody CatalogItemDTO catalogItemDTO
+    ) throws URISyntaxException {
+        log.debug("REST request to remove stock to CatalogItem partially : {}", catalogItemDTO);
+
+        if (catalogItemDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+
+        if (quantity == null || quantity <= 0) {
+            throw new BadRequestAlertException("Quantity to remove to stock must be greater than zero", ENTITY_NAME, "quantityInvalid");
+        }
+
+        if (!catalogItemRepository.existsById(catalogItemDTO.getId())) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idNotFound");
+        }
+
+        Optional<CatalogItemDTO> result = catalogItemService.partialUpdateRemoveStock(catalogItemDTO, quantity);
+
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItemDTO.getId().toString())
+        );
+    }
 }

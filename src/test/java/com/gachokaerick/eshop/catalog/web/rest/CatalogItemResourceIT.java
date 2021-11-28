@@ -3,6 +3,8 @@ package com.gachokaerick.eshop.catalog.web.rest;
 import static com.gachokaerick.eshop.catalog.web.rest.TestUtil.sameNumber;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -12,6 +14,7 @@ import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItem;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapper;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapperImpl;
+import com.gachokaerick.eshop.catalog.exception.DomainException;
 import com.gachokaerick.eshop.catalog.model.CatalogBrand;
 import com.gachokaerick.eshop.catalog.model.CatalogType;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
@@ -69,6 +72,7 @@ class CatalogItemResourceIT {
     private static final String ENTITY_API_URL = "/api/catalog-items";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
     private static final String ENTITY_API_URL_ID_ADD_STOCK = ENTITY_API_URL + "/add/{quantity}";
+    private static final String ENTITY_API_URL_ID_REMOVE_STOCK = ENTITY_API_URL + "/remove/{quantity}";
 
     private static final Random random = new Random();
     private static final AtomicLong count = new AtomicLong(random.nextInt() + (2L * Integer.MAX_VALUE));
@@ -788,5 +792,182 @@ class CatalogItemResourceIT {
         CatalogItem testCatalogItem = catalogItemList.get(catalogItemList.size() - 1);
         assertThat(testCatalogItem.getId()).isEqualTo(catalogItem.getId());
         assertThat(testCatalogItem.getAvailableStock()).isEqualTo(DEFAULT_AVAILABLE_STOCK + 1);
+    }
+
+    @Test
+    @Transactional
+    void addStockWithZeroQuantity() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_ADD_STOCK, 0)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void addStockWithNegativeQuantity() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_ADD_STOCK, -1)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void testStockRemovalWithNegativeQuantity() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_REMOVE_STOCK, -1)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void testStockRemovalWithZeroQuantity() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_REMOVE_STOCK, 0)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void testStockRemoval() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_REMOVE_STOCK, 1)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isOk());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+        CatalogItem testCatalogItem = catalogItemList.get(catalogItemList.size() - 1);
+        assertThat(testCatalogItem.getId()).isEqualTo(catalogItem.getId());
+        assertThat(testCatalogItem.getAvailableStock()).isEqualTo(DEFAULT_AVAILABLE_STOCK - 1);
+    }
+
+    @Test
+    @Transactional
+    void testStockRemovalWithQuantityEqualToAvailableStock() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_REMOVE_STOCK, DEFAULT_AVAILABLE_STOCK)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isOk());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+        CatalogItem testCatalogItem = catalogItemList.get(catalogItemList.size() - 1);
+        assertThat(testCatalogItem.getId()).isEqualTo(catalogItem.getId());
+        assertThat(testCatalogItem.getAvailableStock()).isEqualTo(0);
+    }
+
+    @Test
+    @Transactional
+    void testStockRemovalWithQuantityMoreThanAvailableStock() throws Exception {
+        // Initialize the database
+        catalogItemRepository.saveAndFlush(catalogItem);
+
+        int databaseSizeBeforeUpdate = catalogItemRepository.findAll().size();
+
+        CatalogItemDTO catalogItemDTO = new CatalogItemDTO();
+        catalogItemDTO.setId(catalogItem.getId());
+
+        restCatalogItemMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID_REMOVE_STOCK, DEFAULT_AVAILABLE_STOCK + 1)
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(catalogItemDTO))
+            )
+            .andExpect(status().isOk());
+
+        List<CatalogItem> catalogItemList = catalogItemRepository.findAll();
+        assertThat(catalogItemList).hasSize(databaseSizeBeforeUpdate);
+        CatalogItem testCatalogItem = catalogItemList.get(catalogItemList.size() - 1);
+        assertThat(testCatalogItem.getId()).isEqualTo(catalogItem.getId());
+        assertThat(testCatalogItem.getAvailableStock()).isEqualTo(0);
     }
 }
