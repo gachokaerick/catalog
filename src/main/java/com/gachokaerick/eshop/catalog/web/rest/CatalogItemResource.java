@@ -1,5 +1,7 @@
 package com.gachokaerick.eshop.catalog.web.rest;
 
+import static com.gachokaerick.eshop.catalog.config.Constants.RESTOCK_TOPIC;
+
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
 import com.gachokaerick.eshop.catalog.service.CatalogItemService;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
@@ -9,8 +11,10 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,12 +43,17 @@ public class CatalogItemResource {
     private String applicationName;
 
     private final CatalogItemService catalogItemService;
-
     private final CatalogItemRepository catalogItemRepository;
+    private final CatalogKafkaResource catalogKafkaResource;
 
-    public CatalogItemResource(CatalogItemService catalogItemService, CatalogItemRepository catalogItemRepository) {
+    public CatalogItemResource(
+        CatalogItemService catalogItemService,
+        CatalogItemRepository catalogItemRepository,
+        CatalogKafkaResource catalogKafkaResource
+    ) {
         this.catalogItemService = catalogItemService;
         this.catalogItemRepository = catalogItemRepository;
+        this.catalogKafkaResource = catalogKafkaResource;
     }
 
     /**
@@ -96,6 +105,9 @@ public class CatalogItemResource {
         }
 
         CatalogItemDTO result = catalogItemService.update(catalogItemDTO);
+
+        checkThreshold(Optional.of(result));
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItemDTO.getId().toString()))
@@ -132,6 +144,8 @@ public class CatalogItemResource {
         }
 
         Optional<CatalogItemDTO> result = catalogItemService.partialUpdate(catalogItemDTO);
+
+        checkThreshold(result);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -230,9 +244,27 @@ public class CatalogItemResource {
 
         Optional<CatalogItemDTO> result = catalogItemService.partialUpdateRemoveStock(catalogItemDTO, quantity);
 
+        checkThreshold(result);
+
         return ResponseUtil.wrapOrNotFound(
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, catalogItemDTO.getId().toString())
         );
+    }
+
+    private void checkThreshold(Optional<CatalogItemDTO> catalogItemDTOOptional) {
+        if (catalogItemDTOOptional.isPresent()) {
+            // send email to admin if stock reaches restock threshold
+            CatalogItemDTO catalogItemDTO = catalogItemDTOOptional.get();
+
+            if (Objects.equals(catalogItemDTO.getAvailableStock(), catalogItemDTO.getRestockThreshold())) {
+                String message = "Item: " + catalogItemDTO.getName() + " has reached restock threshold";
+                try {
+                    catalogKafkaResource.publish(RESTOCK_TOPIC, message, null);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

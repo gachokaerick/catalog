@@ -24,7 +24,7 @@ public class CatalogItemDomain {
 
     /**
      * Decrements the quantity of a particular item in inventory and ensures the restockThreshold hasn't
-     * been breached. If so, a RestockRequest is generated in CheckThreshold.
+     * been breached.
      * If there is sufficient stock of an item, then the integer returned at the end of this call should be the same as quantityDesired.
      * In the event that there is no sufficient stock available, the method will remove whatever stock is available and return that quantity to the client.
      * In this case, it is the responsibility of the client to determine if the amount that is returned is the same as quantityDesired.
