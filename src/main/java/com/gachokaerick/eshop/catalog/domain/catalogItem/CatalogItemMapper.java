@@ -2,6 +2,7 @@ package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.service.mapper.*;
+import java.util.Objects;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -20,6 +21,12 @@ public interface CatalogItemMapper extends EntityMapper<CatalogItemDTO, CatalogI
 
         if (dto == null) {
             return;
+        }
+
+        if (dto.getId() != null && entity.getId() != null) {
+            if (!Objects.equals(dto.getId(), entity.getId())) {
+                return;
+            }
         }
 
         if (dto.getId() != null) {
