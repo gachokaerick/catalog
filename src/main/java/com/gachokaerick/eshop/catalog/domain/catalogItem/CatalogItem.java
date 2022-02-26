@@ -66,14 +66,12 @@ public class CatalogItem implements Serializable {
     @Column(name = "on_reorder")
     private Boolean onReorder;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(unique = true)
     private CatalogBrand catalogBrand;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @NotNull
-    @JoinColumn(unique = true)
     private CatalogType catalogType;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
