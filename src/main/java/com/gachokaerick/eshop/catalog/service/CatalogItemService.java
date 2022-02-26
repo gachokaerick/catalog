@@ -3,7 +3,11 @@ package com.gachokaerick.eshop.catalog.service;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItem;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemDomain;
 import com.gachokaerick.eshop.catalog.domain.catalogItem.CatalogItemMapper;
+import com.gachokaerick.eshop.catalog.model.CatalogBrand;
+import com.gachokaerick.eshop.catalog.model.CatalogType;
+import com.gachokaerick.eshop.catalog.repository.CatalogBrandRepository;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
+import com.gachokaerick.eshop.catalog.repository.CatalogTypeRepository;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -11,21 +15,32 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Implementation for managing CatalogItems.
  */
 @Service
+@Transactional
 public class CatalogItemService {
 
     private final Logger log = LoggerFactory.getLogger(CatalogItemService.class);
 
     private final CatalogItemRepository catalogItemRepository;
     private final CatalogItemMapper catalogItemMapper;
+    private final CatalogBrandRepository catalogBrandRepository;
+    private final CatalogTypeRepository catalogTypeRepository;
 
-    public CatalogItemService(CatalogItemRepository catalogItemRepository, CatalogItemMapper catalogItemMapper) {
+    public CatalogItemService(
+        CatalogItemRepository catalogItemRepository,
+        CatalogItemMapper catalogItemMapper,
+        CatalogBrandRepository catalogBrandRepository,
+        CatalogTypeRepository catalogTypeRepository
+    ) {
         this.catalogItemRepository = catalogItemRepository;
         this.catalogItemMapper = catalogItemMapper;
+        this.catalogBrandRepository = catalogBrandRepository;
+        this.catalogTypeRepository = catalogTypeRepository;
     }
 
     /**
@@ -39,6 +54,13 @@ public class CatalogItemService {
         CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItemDTO).build();
 
         CatalogItem catalogItem = catalogItemDomain.getCatalogItem();
+
+        CatalogBrand brand = catalogBrandRepository.getById(catalogItemDTO.getCatalogBrand().getId());
+        CatalogType type = catalogTypeRepository.getById(catalogItemDTO.getCatalogType().getId());
+
+        catalogItem = catalogItemDomain.setBrand(catalogItem, brand);
+        catalogItem = catalogItemDomain.setType(catalogItem, type);
+
         catalogItem = catalogItemRepository.save(catalogItem);
         return catalogItemMapper.toDto(catalogItem);
     }
@@ -48,6 +70,17 @@ public class CatalogItemService {
         CatalogItemDomain catalogItemDomain = new CatalogItemDomain.CatalogItemBuilder().withCatalogItemDTO(catalogItemDTO).build();
 
         CatalogItem catalogItem = catalogItemDomain.getCatalogItem();
+
+        if (catalogItemDTO.getCatalogBrand() != null) {
+            CatalogBrand brand = catalogBrandRepository.getById(catalogItem.getCatalogBrand().getId());
+            catalogItem = catalogItemDomain.setBrand(catalogItem, brand);
+        }
+
+        if (catalogItemDTO.getCatalogType() != null) {
+            CatalogType type = catalogTypeRepository.getById(catalogItem.getCatalogType().getId());
+            catalogItem = catalogItemDomain.setType(catalogItem, type);
+        }
+
         catalogItem = catalogItemRepository.save(catalogItem);
         return catalogItemMapper.toDto(catalogItem);
     }

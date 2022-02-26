@@ -265,6 +265,8 @@ public class CatalogItem implements Serializable {
             ", restockThreshold=" + getRestockThreshold() +
             ", maxStockThreshold=" + getMaxStockThreshold() +
             ", onReorder='" + getOnReorder() + "'" +
+            ", brand='" + getCatalogBrand() + "'" +
+            ", type='" + getCatalogType() + "'" +
             "}";
     }
 }

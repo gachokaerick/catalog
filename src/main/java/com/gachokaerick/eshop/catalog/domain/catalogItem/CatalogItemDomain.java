@@ -1,6 +1,8 @@
 package com.gachokaerick.eshop.catalog.domain.catalogItem;
 
 import com.gachokaerick.eshop.catalog.exception.DomainException;
+import com.gachokaerick.eshop.catalog.model.CatalogBrand;
+import com.gachokaerick.eshop.catalog.model.CatalogType;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapper;
 import com.gachokaerick.eshop.catalog.service.mapper.CatalogBrandMapperImpl;
@@ -82,6 +84,22 @@ public class CatalogItemDomain {
         catalogItem.setOnReorder(catalogItemDTO.getOnReorder());
         catalogItem.setCatalogBrand(catalogBrandMapper.toEntity(catalogItemDTO.getCatalogBrand()));
         catalogItem.setCatalogType(catalogTypeMapper.toEntity(catalogItemDTO.getCatalogType()));
+        return catalogItem;
+    }
+
+    public CatalogItem setBrand(CatalogItem catalogItem, CatalogBrand catalogBrand) {
+        if (catalogBrand.getId() == null) {
+            throw DomainException.throwDomainException(domainName, "Catalog brand id cannot be null");
+        }
+        catalogItem.setCatalogBrand(catalogBrand);
+        return catalogItem;
+    }
+
+    public CatalogItem setType(CatalogItem catalogItem, CatalogType catalogType) {
+        if (catalogType.getId() == null) {
+            throw DomainException.throwDomainException(domainName, "Catalog brand id cannot be null");
+        }
+        catalogItem.setCatalogType(catalogType);
         return catalogItem;
     }
 
