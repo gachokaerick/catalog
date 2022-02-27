@@ -160,9 +160,17 @@ public class CatalogItemResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of catalogItems in body.
      */
     @GetMapping("/catalog-items")
-    public ResponseEntity<List<CatalogItemDTO>> getAllCatalogItems(Pageable pageable) {
+    public ResponseEntity<List<CatalogItemDTO>> getAllCatalogItems(
+        @RequestParam(name = "ids", required = false) List<Long> ids,
+        @RequestParam(name = "name", required = false) String name,
+        @RequestParam(name = "description", required = false) String description,
+        @RequestParam(name = "catalogBrand", required = false) String catalogBrand,
+        @RequestParam(name = "catalogType", required = false) String catalogType,
+        @RequestParam(name = "term", required = false) String term,
+        Pageable pageable
+    ) {
         log.debug("REST request to get a page of CatalogItems");
-        Page<CatalogItemDTO> page = catalogItemService.findAll(pageable);
+        Page<CatalogItemDTO> page = catalogItemService.findAll(ids, name, description, catalogBrand, catalogType, term, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

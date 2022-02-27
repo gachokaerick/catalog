@@ -8,12 +8,15 @@ import com.gachokaerick.eshop.catalog.model.CatalogType;
 import com.gachokaerick.eshop.catalog.repository.CatalogBrandRepository;
 import com.gachokaerick.eshop.catalog.repository.CatalogItemRepository;
 import com.gachokaerick.eshop.catalog.repository.CatalogTypeRepository;
+import com.gachokaerick.eshop.catalog.repository.specification.CatalogItemSpecification;
 import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,12 +115,36 @@ public class CatalogItemService {
     /**
      * Get all the catalogItems.
      *
-     * @param pageable the pagination information.
+     * @param ids          catalog items IDs
+     * @param name         catalog item name
+     * @param description  catalog item description
+     * @param catalogBrand catalog item catalogBrand brand
+     * @param catalogType  catalog item catalogType type
+     * @param term         like term search for catalog item name and description
+     * @param pageable     the pagination information.
      * @return the list of entities.
      */
-    public Page<CatalogItemDTO> findAll(Pageable pageable) {
+    public Page<CatalogItemDTO> findAll(
+        List<Long> ids,
+        String name,
+        String description,
+        String catalogBrand,
+        String catalogType,
+        String term,
+        Pageable pageable
+    ) {
         log.debug("Request to get all CatalogItems");
-        return catalogItemRepository.findAll(pageable).map(catalogItemMapper::toDto);
+
+        Specification<CatalogItem> specification = CatalogItemSpecification.getSpecification(
+            ids,
+            name,
+            description,
+            catalogBrand,
+            catalogType,
+            term
+        );
+
+        return catalogItemRepository.findAll(specification, pageable).map(catalogItemMapper::toDto);
     }
 
     /**
