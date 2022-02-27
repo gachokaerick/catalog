@@ -104,7 +104,6 @@ class CatalogItemResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static CatalogItem createEntity(EntityManager em) {
-        CatalogItemMapper catalogItemMapper = new CatalogItemMapperImpl();
         CatalogBrandMapper catalogBrandMapper = new CatalogBrandMapperImpl();
         CatalogTypeMapper catalogTypeMapper = new CatalogTypeMapperImpl();
 
@@ -371,6 +370,50 @@ class CatalogItemResourceIT {
         // Get all the catalogItemList
         restCatalogItemMockMvc
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(catalogItem.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(sameNumber(DEFAULT_PRICE))))
+            .andExpect(jsonPath("$.[*].pictureFileName").value(hasItem(DEFAULT_PICTURE_FILE_NAME)))
+            .andExpect(jsonPath("$.[*].pictureUrl").value(hasItem(DEFAULT_PICTURE_URL)))
+            .andExpect(jsonPath("$.[*].availableStock").value(hasItem(DEFAULT_AVAILABLE_STOCK)))
+            .andExpect(jsonPath("$.[*].restockThreshold").value(hasItem(DEFAULT_RESTOCK_THRESHOLD)))
+            .andExpect(jsonPath("$.[*].maxStockThreshold").value(hasItem(DEFAULT_MAX_STOCK_THRESHOLD)))
+            .andExpect(jsonPath("$.[*].onReorder").value(hasItem(DEFAULT_ON_REORDER.booleanValue())));
+    }
+
+    @Test
+    @Transactional
+    void getAllCatalogItemsByParams() throws Exception {
+        // Initialize the database
+        CatalogItem item = catalogItemRepository.saveAndFlush(catalogItem);
+
+        String s =
+            "?ids=" +
+            item.getId() +
+            "&" +
+            "?name=" +
+            DEFAULT_NAME +
+            "&" +
+            "?description=" +
+            DEFAULT_DESCRIPTION +
+            "&" +
+            "?catalogBrand=" +
+            CatalogBrandResourceIT.DEFAULT_BRAND +
+            "&" +
+            "?catalogType=" +
+            CatalogTypeResourceIT.DEFAULT_TYPE +
+            "&" +
+            "?term=" +
+            "AAA" +
+            "&" +
+            "?sort=id,desc";
+
+        // Get all the catalogItemList
+        restCatalogItemMockMvc
+            .perform(get(ENTITY_API_URL + s))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(catalogItem.getId().intValue())))

@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class CatalogTypeResourceIT {
 
-    private static final String DEFAULT_TYPE = "AAAAAAAAAA";
+    static final String DEFAULT_TYPE = "AAAAAAAAAA";
     private static final String UPDATED_TYPE = "BBBBBBBBBB";
 
     private static final String ENTITY_API_URL = "/api/catalog-types";

@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class CatalogBrandResourceIT {
 
-    private static final String DEFAULT_BRAND = "AAAAAAAAAA";
+    static final String DEFAULT_BRAND = "AAAAAAAAAA";
     private static final String UPDATED_BRAND = "BBBBBBBBBB";
 
     private static final String ENTITY_API_URL = "/api/catalog-brands";

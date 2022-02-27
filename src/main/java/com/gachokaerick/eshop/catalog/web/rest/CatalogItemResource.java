@@ -8,12 +8,16 @@ import com.gachokaerick.eshop.catalog.service.dto.CatalogItemDTO;
 import com.gachokaerick.eshop.catalog.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +165,7 @@ public class CatalogItemResource {
      */
     @GetMapping("/catalog-items")
     public ResponseEntity<List<CatalogItemDTO>> getAllCatalogItems(
-        @RequestParam(name = "ids", required = false) List<Long> ids,
+        @RequestParam(name = "ids", required = false) String idsString,
         @RequestParam(name = "name", required = false) String name,
         @RequestParam(name = "description", required = false) String description,
         @RequestParam(name = "catalogBrand", required = false) String catalogBrand,
@@ -170,6 +174,10 @@ public class CatalogItemResource {
         Pageable pageable
     ) {
         log.debug("REST request to get a page of CatalogItems");
+        List<Long> ids = null;
+        if (idsString != null) {
+            ids = Stream.of(idsString.split(",")).map(NumberUtils::createLong).collect(Collectors.toList());
+        }
         Page<CatalogItemDTO> page = catalogItemService.findAll(ids, name, description, catalogBrand, catalogType, term, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
