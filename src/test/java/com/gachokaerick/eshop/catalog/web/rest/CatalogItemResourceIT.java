@@ -394,22 +394,22 @@ class CatalogItemResourceIT {
             "?ids=" +
             item.getId() +
             "&" +
-            "?name=" +
+            "name=" +
             DEFAULT_NAME +
             "&" +
-            "?description=" +
+            "description=" +
             DEFAULT_DESCRIPTION +
             "&" +
-            "?catalogBrand=" +
+            "catalogBrand=" +
             CatalogBrandResourceIT.DEFAULT_BRAND +
             "&" +
-            "?catalogType=" +
+            "catalogType=" +
             CatalogTypeResourceIT.DEFAULT_TYPE +
             "&" +
-            "?term=" +
+            "term=" +
             "AAA" +
             "&" +
-            "?sort=id,desc";
+            "sort=id,desc";
 
         // Get all the catalogItemList
         restCatalogItemMockMvc
