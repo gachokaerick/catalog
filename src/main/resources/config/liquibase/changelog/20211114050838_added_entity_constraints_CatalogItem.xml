@@ -20,4 +20,40 @@
                                  referencedColumnNames="id"
                                  referencedTableName="catalog_type"/>
     </changeSet>
+
+    <changeSet id="20220317073514-1" author="jhipster">
+
+        <addColumn tableName="catalog_item">
+            <column name="catalog_brand_id_2" type="bigint"/>
+        </addColumn>
+
+        <update tableName="catalog_item">
+            <column name="catalog_brand_id_2" type="bigint" valueComputed="catalog_brand_id"/>
+        </update>
+
+        <addNotNullConstraint tableName="catalog_item" columnName="catalog_brand_id_2" />
+
+        <dropColumn columnName="catalog_brand_id" tableName="catalog_item"/>
+
+        <renameColumn tableName="catalog_item" oldColumnName="catalog_brand_id_2" newColumnName="catalog_brand_id"/>
+
+    </changeSet>
+
+    <changeSet id="20220317073514-2" author="jhipster">
+
+        <addColumn tableName="catalog_item">
+            <column name="catalog_type_id_2" type="bigint"/>
+        </addColumn>
+
+        <update tableName="catalog_item">
+            <column name="catalog_type_id_2" type="bigint" valueComputed="catalog_type_id"/>
+        </update>
+
+        <addNotNullConstraint tableName="catalog_item" columnName="catalog_type_id_2" />
+
+        <dropColumn columnName="catalog_type_id" tableName="catalog_item"/>
+
+        <renameColumn tableName="catalog_item" oldColumnName="catalog_type_id_2" newColumnName="catalog_type_id"/>
+
+    </changeSet>
 </databaseChangeLog>
